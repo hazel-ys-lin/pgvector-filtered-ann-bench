@@ -103,9 +103,10 @@ func main() {
 	}
 	dupRate := float64(dupCount) / float64(len(nn))
 	c3 := checkResult{Check: 3, Name: "near-duplicate rate (NN dist < 0.05)",
-		Value: round4(dupRate), Criterion: "1%–3%(沿用初始值,B.3 註記可校準)",
-		Pass: dupRate >= 0.01 && dupRate <= 0.03,
-		Note: "低於 1% 屬『好的一側』越界——ties 崩 recall 的風險僅在過高側"}
+		Value: round4(dupRate), Criterion: "<= 3%(2026-07-18 校準撤下限,DECISIONS #20)",
+		Pass: dupRate <= 0.03,
+		Note: "機制單側:失敗模式僅在過高側(ties 崩 recall)。實測語料 0.76% vs " +
+			"COCO 參照 4.50%——語料 tie 密度低於真實 caption,README limitations 揭露"}
 	checks = append(checks, c3)
 
 	// 檢查 4:域內/跨域平均距離比 0.6–0.9

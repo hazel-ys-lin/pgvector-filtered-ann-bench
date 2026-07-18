@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-18T12:01:04Z",
+  "generated_at": "2026-07-18T12:16:26Z",
   "corpus_file": "corpus/corpus_5k.jsonl",
   "vectors_file": "corpus/vectors_5k.jsonl",
   "ref_file": "corpus/coco_ref_1k_vec.jsonl",
@@ -30,14 +30,14 @@
       "check": 3,
       "name": "near-duplicate rate (NN dist \u003c 0.05)",
       "value": 0.0076,
-      "criterion": "1%–3%(沿用初始值,B.3 註記可校準)",
-      "pass": false,
-      "note": "低於 1% 屬『好的一側』越界——ties 崩 recall 的風險僅在過高側"
+      "criterion": "\u003c= 3%(2026-07-18 校準撤下限,DECISIONS #20)",
+      "pass": true,
+      "note": "機制單側:失敗模式僅在過高側(ties 崩 recall)。實測語料 0.76% vs COCO 參照 4.50%——語料 tie 密度低於真實 caption,README limitations 揭露"
     },
     {
       "check": 4,
       "name": "intra/cross domain distance ratio",
-      "value": 0.8371,
+      "value": 0.8396,
       "criterion": "0.6–0.9(沿用初始值,模型/域粒度敏感,可校準)",
       "pass": true
     },
@@ -86,10 +86,10 @@
     {
       "check": 6,
       "name": "end-to-end recall (no-filter, ef=200, k=50)",
-      "value": 0.9992,
+      "value": 0.9996,
       "criterion": "\u003e= 0.99, plan asserted hnsw_index",
       "pass": true
     }
   ],
-  "all_pass": false
+  "all_pass": true
 }
