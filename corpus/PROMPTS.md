@@ -30,10 +30,20 @@ number and age of participants / indoor vs outdoor / weather / time of day /
 mood / camera distance (close-up to wide shot) / primary objects
 ```
 
-## Per-domain 追加約束(domain_hints;檢查 5 失敗域重生用,揭露義務)
+## Per-domain 追加約束(domain_hints;揭露義務)
+
+```
+(none)
+```
+
+## Per-domain 名冊約束(domain_rosters,DECISIONS #19;揭露義務)
+
+**控制不對稱聲明**:下列域的生成受靜態名冊約束(per-record 指派,
+模型對「寫什麼主體」零選擇權);**其他域無此控制**。名冊全文見
+configs/domains_v1.toml。
 
 ```
 {
-  "wildlife": "Vary species widely across records; avoid iconic textbook scenes (sea otter cracking an urchin, barn owl on a rafter, hummingbird at a red flower, platypus in a misty creek); prefer uncommon species, behaviors, habitats, seasons, and geographic regions."
+  "wildlife": "197 subjects, per-record rotation"
 }
 ```

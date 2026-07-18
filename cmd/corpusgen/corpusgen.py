@@ -52,9 +52,22 @@ Generate {n} records. Diversity axes (vary at least three per record):
 number and age of participants / indoor vs outdoor / weather / time of day /
 mood / camera distance (close-up to wide shot) / primary objects"""
 
-# per-domain 追加約束(TOML [domain_hints];檢查 5 失敗域的重生機制,
-# 全文記入 PROMPTS.md 揭露)
+# per-domain 追加約束(TOML [domain_hints];全文記入 PROMPTS.md 揭露)
 HINT_TEMPLATE = "\nAdditional constraint for this domain: {hint}"
+
+# 名冊 per-record 指派(TOML [domain_rosters],DECISIONS #19):
+# 物種指派到「筆」不指派到「批」——模型對「寫什麼」零選擇權,
+# 跨批重複由建構排除。勸誡式 hint 已實證失敗(8.98%→34.73%)。
+ROSTER_TEMPLATE = ("\nSubject assignment for this batch — record i MUST feature "
+                   "subject i, no substitutions, no additions:\n{assignments}")
+
+
+def roster_slice(roster: list, seed: int, start: int, n: int) -> list:
+    """決定性名冊切片:seed 洗牌一次,依已生成筆數 start 連續取 n(mod 迴繞)。
+    同 seed + 同 start 必得同指派——resume 安全。"""
+    shuffled = roster[:]
+    random.Random(seed).shuffle(shuffled)
+    return [shuffled[(start + i) % len(shuffled)] for i in range(n)]
 
 REQUIRED_KEYS = {"text", "domain", "scene", "objects", "time_of_day"}
 JACCARD_THRESHOLD = 0.6   # B.2:同批 > 0.6 丟棄
@@ -156,6 +169,7 @@ class Monitors:
         self.records_total = 0
         self.cross_dup = 0
         self.cross_checked = 0
+        self.species_mismatch = 0         # roster 指派未遵從筆數(#19 遵從監控)
         self.batch_discard_curve = []     # (batch_no, domain, in_batch_discard, format_rejects)
 
     def check_cross_batch(self, grams: set) -> bool:
@@ -207,6 +221,7 @@ class Monitors:
                     self.records_with_names / max(self.records_total, 1), 4),
             },
             "per_domain_text_dup_rate": per_domain,
+            "roster_species_mismatch": self.species_mismatch,
             "watchlist": {
                 d: {"text_dup_rate": per_domain.get(d, 0.0),
                     "note": "B.3 檢查 5 預先觀察名單(文字層預警;正式判定在 embedding 空間)"}
@@ -234,7 +249,7 @@ def load_existing(out_path: pathlib.Path, monitors: Monitors) -> tuple[collectio
     return counts, max_id
 
 
-def write_prompts_md(path: pathlib.Path, model: str, args, hints: dict):
+def write_prompts_md(path: pathlib.Path, model: str, args, hints: dict, rosters: dict):
     path.write_text(f"""# PROMPTS.md — 語料生成方法全文(B.4;方法可重現本身是賣點)
 
 - 生成模型(DECISIONS #13,首批釘定):`{model}`
@@ -257,10 +272,21 @@ def write_prompts_md(path: pathlib.Path, model: str, args, hints: dict):
 {USER_TEMPLATE}
 ```
 
-## Per-domain 追加約束(domain_hints;檢查 5 失敗域重生用,揭露義務)
+## Per-domain 追加約束(domain_hints;揭露義務)
 
 ```
 {json.dumps(hints, indent=2, ensure_ascii=False) if hints else "(none)"}
+```
+
+## Per-domain 名冊約束(domain_rosters,DECISIONS #19;揭露義務)
+
+**控制不對稱聲明**:下列域的生成受靜態名冊約束(per-record 指派,
+模型對「寫什麼主體」零選擇權);**其他域無此控制**。名冊全文見
+configs/domains_v1.toml。
+
+```
+{json.dumps({d: f"{len(r)} subjects, per-record rotation" for d, r in rosters.items()},
+            indent=2, ensure_ascii=False) if rosters else "(none)"}
 ```
 """)
 
@@ -305,6 +331,7 @@ def main():
     proportions = cfg["proportions"]
     tiers = cfg["tiers"]
     hints = cfg.get("domain_hints", {})
+    rosters = cfg.get("domain_rosters", {})
     all_domains = [d for ds in tiers.values() for d in ds]
     missing = set(all_domains) ^ set(proportions)
     if missing:
@@ -321,7 +348,7 @@ def main():
     targets = domain_targets(proportions, args.total)
     next_id = max_id + 1
     batch_no = 0
-    write_prompts_md(pathlib.Path(args.prompts_md), args.model, args, hints)
+    write_prompts_md(pathlib.Path(args.prompts_md), args.model, args, hints, rosters)
 
     with out_path.open("a") as out:
         while True:
@@ -337,6 +364,11 @@ def main():
                 user_prompt = USER_TEMPLATE.format(domain=domain, n=n)
                 if domain in hints:
                     user_prompt += HINT_TEMPLATE.format(hint=hints[domain])
+                species = None
+                if domain in rosters:
+                    species = roster_slice(rosters[domain], args.seed, counts[domain], n)
+                    user_prompt += ROSTER_TEMPLATE.format(
+                        assignments="\n".join(f"{i+1}. {s}" for i, s in enumerate(species)))
                 resp = client.models.generate_content(
                     model=args.model,
                     contents=user_prompt,
@@ -363,9 +395,14 @@ def main():
             records, fmt_rejects = parse_batch(resp.text or "", domain)
             in_batch_discard = 0
             batch_grams = []
-            for rec in records:
+            for pos, rec in enumerate(records):
                 if counts[domain] >= targets[domain]:
                     break
+                # 遵從監控:指派物種的尾詞須出現於該筆文字(寬鬆比對,只計數不丟棄)
+                if species and pos < len(species):
+                    tail = species[pos].split()[-1].lower().rstrip("s")
+                    if tail not in rec["text"].lower():
+                        monitors.species_mismatch += 1
                 g = trigrams(rec["text"])
                 if any(jaccard(g, h) > JACCARD_THRESHOLD for h in batch_grams):
                     in_batch_discard += 1
@@ -418,6 +455,15 @@ def selftest():
 
     t = domain_targets({"a": 0.5, "b": 0.3, "c": 0.2}, 10)
     assert sum(t.values()) == 10 and t["a"] == 5
+
+    # roster_slice:決定性、續跑一致、mod 迴繞
+    roster = [f"sp{i}" for i in range(7)]
+    a1 = roster_slice(roster, 42, 0, 5)
+    a2 = roster_slice(roster, 42, 0, 5)
+    assert a1 == a2, "same seed+start must give same assignment"
+    b = roster_slice(roster, 42, 5, 5)
+    assert a1[:5] + b[:2] == roster_slice(roster, 42, 0, 7), "consecutive slices align"
+    assert len(set(a1)) == 5, "no dup within slice when roster large enough"
 
     recs, rej = parse_batch(
         '{"text": "One two three four five six seven eight nine ten eleven", '

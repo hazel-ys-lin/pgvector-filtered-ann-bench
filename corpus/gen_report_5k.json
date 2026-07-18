@@ -92,7 +92,7 @@
       "Sophia": 22,
       "Ethan": 21
     },
-    "records_with_name_fraction": 0.7766
+    "records_with_name_fraction": 0.7592
   },
   "per_domain_text_dup_rate": {
     "religious ceremonies": 0.0,
@@ -126,6 +126,7 @@
     "studio photography": 0.0,
     "wildlife": 0.0
   },
+  "roster_species_mismatch": 1,
   "watchlist": {
     "religious ceremonies": {
       "text_dup_rate": 0.0,
