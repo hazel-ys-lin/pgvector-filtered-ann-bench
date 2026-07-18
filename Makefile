@@ -1,3 +1,7 @@
+# .env(gitignored)存本機秘密,如 GEMINI_API_KEY=...;存在即自動載入並外傳給子行程
+-include .env
+export
+
 DATABASE_URL ?= postgres://bench:bench@localhost:5433/bench
 
 .PHONY: up down smoke shm-check test
