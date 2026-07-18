@@ -1,3 +1,8 @@
 .DS_Store
 
 .env
+
+# 語料 JSONL 走 release assets(DESIGN B.5 第 5 節),不進 git;
+# PROMPTS.md 與 gen_report/geometry_report 要進 git
+corpus/*.jsonl
+.venv/

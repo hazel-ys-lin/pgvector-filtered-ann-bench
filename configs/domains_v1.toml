@@ -1,0 +1,56 @@
+# B.1 域 ↔ 檔位映射表(DECISIONS #15,(iii) 混合制)。
+# corpusgen(Python)與 internal/filters(Go,順序 4)共用此檔——單一事實來源。
+# proportions 由 corpusgen 正規化(總和 ≈ 1,浮點誤差可容)。
+# 初始案,5k 實跑 GLS 後可調,調整記入 DECISIONS。
+
+[tiers]
+p07 = ["studio photography"]
+p3 = ["esports & board games"]
+p6 = ["dance rehearsals", "festival parades"]
+p15 = ["weddings", "graduation ceremonies", "street markets", "coffee & desserts", "museum exhibitions"]
+p50 = [
+  "sports events", "music performances", "hiking & mountaineering",
+  "beach activities", "cooking & cuisine", "animals & pets", "wildlife",
+  "city streetscapes", "architecture & landmarks", "transportation",
+  "gardening & plants", "work scenes", "medical scenes",
+  "classrooms & courses", "children's play",
+]
+# 背景域:不屬任何檔位,確保檔位不構成全語料窮盡分割。
+# religious ceremonies 刻意置此(B.1 注記:檢查 5 預警名單,重生不傷檔位)。
+background = [
+  "religious ceremonies", "agriculture & fishing",
+  "construction & manufacturing", "tech expos",
+  "camping & picnics", "volunteering & charity",
+]
+
+[proportions]
+"studio photography" = 0.007
+"esports & board games" = 0.030
+"dance rehearsals" = 0.030
+"festival parades" = 0.030
+"weddings" = 0.030
+"graduation ceremonies" = 0.030
+"street markets" = 0.030
+"coffee & desserts" = 0.030
+"museum exhibitions" = 0.030
+"sports events" = 0.033333
+"music performances" = 0.033333
+"hiking & mountaineering" = 0.033333
+"beach activities" = 0.033333
+"cooking & cuisine" = 0.033333
+"animals & pets" = 0.033333
+"wildlife" = 0.033333
+"city streetscapes" = 0.033333
+"architecture & landmarks" = 0.033333
+"transportation" = 0.033333
+"gardening & plants" = 0.033333
+"work scenes" = 0.033333
+"medical scenes" = 0.033333
+"classrooms & courses" = 0.033333
+"children's play" = 0.033333
+"religious ceremonies" = 0.042167
+"agriculture & fishing" = 0.042167
+"construction & manufacturing" = 0.042167
+"tech expos" = 0.042167
+"camping & picnics" = 0.042167
+"volunteering & charity" = 0.042167
