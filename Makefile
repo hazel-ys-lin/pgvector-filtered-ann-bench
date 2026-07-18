@@ -36,3 +36,18 @@ corpusgen-selftest:
 embed-5k:
 	go run ./cmd/embed --in corpus/corpus_5k.jsonl --out corpus/vectors_5k.jsonl \
 		--task-type document
+
+# 順序 3:COCO 參照抽樣(#18;COCO_ZIP= 指向官方 annotations_trainval2017.zip)
+coco-sample:
+	uv run scripts/coco_sample.py --zip $(COCO_ZIP) --out corpus/coco_ref_1k.jsonl \
+		--n 1000 --seed 42
+
+embed-coco:
+	go run ./cmd/embed --in corpus/coco_ref_1k.jsonl --out corpus/coco_ref_1k_vec.jsonl \
+		--task-type document
+
+# 順序 3:幾何檢查 1–6(檢查 6 需 DB;up 先)
+validate: up
+	DATABASE_URL=$(DATABASE_URL) go run ./cmd/validate \
+		--corpus corpus/corpus_5k.jsonl --vectors corpus/vectors_5k.jsonl \
+		--ref corpus/coco_ref_1k_vec.jsonl --report corpus/geometry_report.json

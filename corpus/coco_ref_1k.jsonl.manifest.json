@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "source": "COCO 2017 annotations (official zip), val split",
+  "zip_file": "annotations_trainval2017.zip",
+  "zip_sha256": "113a836d90195ee1f884e704da6304dfaaecff1f023f49b6ca93c4aaae470268",
+  "member": "annotations/captions_val2017.json",
+  "n_images": 1000,
+  "seed": 42,
+  "caption_rule": "per selected image, caption with smallest annotation id",
+  "license": "CC BY 4.0 (annotations); see ATTRIBUTION.md"
+}

@@ -1,0 +1,95 @@
+{
+  "generated_at": "2026-07-18T11:35:27Z",
+  "corpus_file": "corpus/corpus_5k.jsonl",
+  "vectors_file": "corpus/vectors_5k.jsonl",
+  "ref_file": "corpus/coco_ref_1k_vec.jsonl",
+  "seed": 42,
+  "pair_sample": 5000,
+  "checks": [
+    {
+      "check": 1,
+      "name": "pairwise distance median",
+      "value": {
+        "corpus": 0.2804,
+        "ref": 0.2931
+      },
+      "criterion": "corpus median within ref ±0.05",
+      "pass": true
+    },
+    {
+      "check": 2,
+      "name": "distance concentration (std/mean)",
+      "value": {
+        "corpus": 0.1234,
+        "ref": 0.1289
+      },
+      "criterion": "corpus std/mean \u003e= 0.7 × ref",
+      "pass": true
+    },
+    {
+      "check": 3,
+      "name": "near-duplicate rate (NN dist \u003c 0.05)",
+      "value": 0.0106,
+      "criterion": "1%–3%(沿用初始值,B.3 註記可校準)",
+      "pass": true,
+      "note": "低於 1% 屬『好的一側』越界——ties 崩 recall 的風險僅在過高側"
+    },
+    {
+      "check": 4,
+      "name": "intra/cross domain distance ratio",
+      "value": 0.845,
+      "criterion": "0.6–0.9(沿用初始值,模型/域粒度敏感,可校準)",
+      "pass": true
+    },
+    {
+      "check": 5,
+      "name": "per-domain near-duplicate rate",
+      "value": {
+        "per_domain": {
+          "agriculture \u0026 fishing": 0.0095,
+          "animals \u0026 pets": 0,
+          "architecture \u0026 landmarks": 0.012,
+          "beach activities": 0,
+          "camping \u0026 picnics": 0,
+          "children's play": 0.012,
+          "city streetscapes": 0,
+          "classrooms \u0026 courses": 0.012,
+          "coffee \u0026 desserts": 0.0133,
+          "construction \u0026 manufacturing": 0.0284,
+          "cooking \u0026 cuisine": 0,
+          "dance rehearsals": 0,
+          "esports \u0026 board games": 0,
+          "festival parades": 0.0267,
+          "gardening \u0026 plants": 0,
+          "graduation ceremonies": 0,
+          "hiking \u0026 mountaineering": 0,
+          "medical scenes": 0,
+          "museum exhibitions": 0,
+          "music performances": 0,
+          "religious ceremonies": 0.0379,
+          "sports events": 0.012,
+          "street markets": 0,
+          "studio photography": 0,
+          "tech expos": 0.0095,
+          "transportation": 0.012,
+          "volunteering \u0026 charity": 0,
+          "weddings": 0,
+          "wildlife": 0.0898,
+          "work scenes": 0
+        },
+        "worst_domain": "wildlife",
+        "worst_rate": 0.0898
+      },
+      "criterion": "every domain \u003c 5%",
+      "pass": false
+    },
+    {
+      "check": 6,
+      "name": "end-to-end recall (no-filter, ef=200, k=50)",
+      "value": 1,
+      "criterion": "\u003e= 0.99, plan asserted hnsw_index",
+      "pass": true
+    }
+  ],
+  "all_pass": false
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-18T11:33:32Z",
+  "source_file": "corpus/coco_ref_1k.jsonl",
+  "source_sha256": "47062716e44535663828827316858ebf621e9750580237d386ebf6446aaaf300",
+  "records": 1000,
+  "model": "gemini-embedding-001",
+  "task_type": "RETRIEVAL_DOCUMENT",
+  "output_dimensionality": 768,
+  "normalized": true,
+  "pre_norm_min": 0.5803666709459789,
+  "pre_norm_max": 0.5954713387774943,
+  "pre_norm_mean": 0.5889935586755832,
+  "git_commit": "2dff0695895100717c5458c810d3fbe943b724d1"
+}
