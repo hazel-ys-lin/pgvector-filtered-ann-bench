@@ -325,9 +325,20 @@ def main():
                     config=types.GenerateContentConfig(
                         system_instruction=SYSTEM_PROMPT, temperature=temp),
                 )
-            except Exception as e:  # 配額/暫時性錯誤:退避重試
-                print(f"[batch {batch_no}] API error: {e}; backoff 30s", file=sys.stderr)
-                time.sleep(30)
+            except Exception as e:  # 配額/暫時性錯誤
+                msg = str(e)
+                if "PerDay" in msg:
+                    # 日配額打滿:重試無意義(2026-07-18 實測 free tier 20 req/天/模型)。
+                    # 明確退出;輸出已逐筆 flush,之後同指令續跑。
+                    print(f"[batch {batch_no}] daily quota exhausted "
+                          f"({sum(counts.values())}/{args.total} done, resume-safe). "
+                          "升 tier 或明日再跑。", file=sys.stderr)
+                    break
+                m = re.search(r"retry in ([\d.]+)s", msg) or re.search(r"retryDelay': '(\d+)s", msg)
+                wait = max(float(m.group(1)), 10.0) + 1 if m else 30.0
+                print(f"[batch {batch_no}] API error (transient): backoff {wait:.0f}s",
+                      file=sys.stderr)
+                time.sleep(wait)
                 continue
 
             records, fmt_rejects = parse_batch(resp.text or "", domain)
