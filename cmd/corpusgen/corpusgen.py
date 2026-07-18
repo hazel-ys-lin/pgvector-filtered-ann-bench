@@ -283,7 +283,8 @@ def main():
         sys.exit("GEMINI_API_KEY not set(.env 或環境變數;#9 執行注記:個人帳號,配額先查)")
     from google import genai
     from google.genai import types
-    client = genai.Client()
+    # timeout 必設:無 timeout 時單一 stalled 請求會讓整個生成靜默卡死
+    client = genai.Client(http_options=types.HttpOptions(timeout=120_000))  # ms
 
     with open(args.config, "rb") as f:
         cfg = tomllib.load(f)
