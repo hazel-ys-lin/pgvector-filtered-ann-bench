@@ -20,6 +20,9 @@
 |---|---|---|
 | 8 | 語料語言 | **英文**。理由:公開 repo 的可審查性(讀者可抽查語料)、PROMPTS.md 方法重現價值、英文公開授權參照資料集可得性。代價:中文錨點降為僅示意(原本即標注僅量級參考,可承受)。B.1 域表/B.2 prompt/query 集已同步英文化。 |
 | 9 | Embedding 模型 | **gemini-embedding-001, 768d**。理由:索引尺寸合理、POC 全程行為熟悉、錨點連續性。dims 已參數化,換模型成本 = 重建參照分佈。執行注記:embed loader 併發與配額依**個人帳號**現行限制查定,不沿用公司帳號印象(**待辦**)。 |
-| 10 | 真實文字參照樣本 | **COCO Captions 抽 1000 筆**(與待驗語料同文體 photo caption,參照效度依據)。**待辦:CC BY 4.0 授權現況查證,完成前不動工 validate 參照分佈部分。** |
+| 10 | 真實文字參照樣本 | **COCO Captions 抽 1000 筆**(與待驗語料同文體 photo caption,參照效度依據)。~~待辦:CC BY 4.0 授權現況查證~~ **2026-07-18 銷案**:author 親閱 COCO 條款頁確認無誤(證據存檔 `coco_termsofuse_evidence_20260718.htm`),validate 參照分佈部分解鎖。 |
 | 11 | 冒煙 recall 門檻 | **0.95 裁決通過**(高斯向量為 B.3 定義之病態幾何,0.99 屬順序 3 真語料之檢查 6,不變)。附帶條件:recall 量測 query 斷言 PlanType = hnsw_index,結構性保證測的是 ANN 路徑(DESIGN 動工順序 2 加註)。 |
 | 12 | force_index 活註記 | 順序 2 發現 ef-cost 翻轉現象(cost 隨 ef_search 線性放大,10k 實測 ef=400 時 seq+sort 勝出),force_index 可能因處置 (d')(= force_index + 深 ef,拆分演算法效果與含 planner 反應的實際效果)復活。**100k 實跑後裁決是否恢復枚舉**(DESIGN A.5b 加註)。 |
+| 13 | 語料生成模型 | **Gemini**。理由:與 embedding(#9)同家、一把 API key、個人帳號運維單純。具體 model id 與生成參數於首批生成時釘定,全文記入 corpus/PROMPTS.md(B.4)。 |
+| 14 | corpusgen 實作語言 | **Python**(A.1 已註記)。理由:prompt 迭代速度;去重/監控邏輯輕量。harness 主體仍 Go——corpusgen 不碰 DB,A.0 原則 4 不受影響。 |
+| 15 | 配比機制 | **(iii) 混合制**:多數域等配比 + 專屬小域供低檔位 + 高檔位域群組聯集,映射表入 B.1(初始案,5k 實跑 GLS 後可調)。連動修正 B.3 檢查 7 為**分檔位準則**:散開型全檔位 r ≈ 1(±0.15);聚集型 p07/p3/p6 須顯著偏離 1;p15/p50 不設硬門檻、實測披露(域聯集稀釋為量測對象)。 |

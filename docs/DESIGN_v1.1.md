@@ -43,7 +43,7 @@
 pgvector-filtered-ann-bench/
 ├── cmd/
 │   ├── bench/          # 主入口:讀 config → 跑 sweep → 出報表
-│   ├── corpusgen/      # LLM 生成文字語料
+│   ├── corpusgen/      # LLM 生成文字語料(Python 實作,DECISIONS #14)
 │   ├── embed/          # 併發 embed loader(文字 → 向量 → JSONL)
 │   └── validate/       # 語料幾何驗證 + GLS 計算(Part B)
 ├── internal/
@@ -171,7 +171,18 @@ sports events / music performances / weddings / graduation ceremonies / street m
 
 (2026-07-18 拍板英文 30 域,DECISIONS.md #8;「農事漁業」合併譯為 agriculture & fishing,配比結構不動。)"religious ceremonies" 注記:生成時多樣性軸須涵蓋跨宗教場景,防止塌向單一文化預設;此域列為 B.3 檢查 5(單域近重複率)的預先觀察名單。
 
-每域生成量 = 該域目標選擇性 × 總量(聚集型 filter 的選擇性由此控制)。
+**配比機制(2026-07-18 拍板 (iii) 混合制,DECISIONS.md #15)**:多數域等配比 + 專屬小域供低檔位 + 高檔位由域群組聯集構成;聚集型 tier 標籤 = 群組 id(單域群組即該域)。映射表:
+
+| 檔位 | 目標選擇性 | 域(群組) | 生成配比 |
+|---|---|---|---|
+| p07 | 0.7% | studio photography(專屬小域) | 0.7% |
+| p3 | 3% | esports & board games(專屬域) | 3.0% |
+| p6 | 6% | dance rehearsals + festival parades | 3.0% × 2 |
+| p15 | 15% | weddings / graduation ceremonies / street markets / coffee & desserts / museum exhibitions | 3.0% × 5 |
+| p50 | 50% | sports events / music performances / hiking & mountaineering / beach activities / cooking & cuisine / animals & pets / wildlife / city streetscapes / architecture & landmarks / transportation / gardening & plants / work scenes / medical scenes / classrooms & courses / children's play | 3.33% × 15 |
+| (背景,無檔位) | 25.3% | religious ceremonies / agriculture & fishing / construction & manufacturing / tech expos / camping & picnics / volunteering & charity | 4.22% × 6 |
+
+背景域確保檔位不構成全語料的窮盡分割;religious ceremonies 刻意置於背景域,其檢查 5 預警若觸發重生不影響任何檔位。p50 為 15 域聯集,聚集度預期被稀釋——稀釋本身是量測對象,GLS 實測披露(B.3 檢查 7 分檔位準則)。散開型標籤與各檔位全域選擇性對齊,由 seed 隨機指派。映射表為初始案,5k 實跑 GLS 後可調,調整記入 DECISIONS。
 
 ### B.2 Prompt 模板
 
@@ -211,7 +222,7 @@ mood / camera distance (close-up to wide shot) / primary objects
 | 4 | 叢集結構存在 | 域內/跨域平均距離比 | 0\.6–0.9 | ≈1 → 無叢集,聚集型實驗失效 | 
 | 5 | 無退化叢 | 單域近重複率 | 每域 < 5% | 該域 prompt 塌縮,重生 | 
 | 6 | End-to-end 冒煙 | no-filter ef=200 recall@50 vs exact | ≥ 0.99 | 幾何或索引有問題,先修 | 
-| 7 | (v1.1)GLS 建構驗證 | MeasureGLS 兩套標籤 | 散開型 r ≈ 1(±0.15);聚集型顯著偏離 | 散布軸建構失敗,調域配比 | 
+| 7 | (v1.1)GLS 建構驗證 | MeasureGLS 兩套標籤 | 分檔位準則(2026-07-18 修正,DECISIONS #15):散開型全檔位 r ≈ 1(±0.15);聚集型 p07/p3/p6 須顯著偏離 1;p15/p50 為域聯集、偏離預期隨聯集稀釋遞減,不設硬門檻,實測值入 geometry_report 並於 README 披露 | 散布軸建構失敗,調域配比 | 
 
 檢查 3/4/5 閾值為沿用先前工作的初始值(結構比值、語言敏感度低,但檢查 4 的域內/跨域距離比依賴模型與域切分粒度),首個 5k 語料實跑後校準,調整記入 DECISIONS。
 
