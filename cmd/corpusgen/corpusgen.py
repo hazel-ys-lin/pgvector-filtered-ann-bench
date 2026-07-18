@@ -71,9 +71,16 @@ def jaccard(a: set, b: set) -> float:
     return len(a & b) / len(a | b)
 
 
+TITLE_WORDS = {"Dr", "Mr", "Mrs", "Ms", "St", "Prof", "Fr", "Rev"}
+
+
 def extract_names(text: str) -> set:
-    """粗抽專有名:非句首的大寫詞串。啟發式監控用,非 NER。"""
+    """粗抽專有名:非句首的大寫詞串。啟發式監控用,非 NER。
+    濾誤報:稱謂單獨出現不算名;純大寫縮寫(LED、AI)不算名。"""
     names = set()
+    # 稱謂縮寫的句點會騙過句子切分("Dr. Chen" 斷成兩句),先去掉
+    for t in TITLE_WORDS:
+        text = text.replace(f"{t}. ", f"{t} ")
     for sent in re.split(r"(?<=[.!?])\s+", text):
         words = sent.split()
         i = 1  # 跳過句首詞
@@ -89,7 +96,10 @@ def extract_names(text: str) -> set:
                         j += 1
                     else:
                         break
-                names.add(" ".join(run))
+                # 丟棄:單獨稱謂、純大寫縮寫、稱謂開頭但只剩稱謂的串
+                run = [w for w in run if not (w.isupper() and len(w) <= 4)]
+                if run and not all(w in TITLE_WORDS for w in run):
+                    names.add(" ".join(run))
                 i = j
             else:
                 i += 1
@@ -371,6 +381,9 @@ def selftest():
     names = extract_names("The vendor Maria Lopez waves near Blue Harbor Cafe. Children play.")
     assert "Maria Lopez" in names and "Blue Harbor Cafe" in names
     assert "The" not in names and "Children" not in names  # 句首詞跳過
+    noise = extract_names("A worker installs LED panels while Dr. Chen and St. Mary volunteers watch.")
+    assert "LED" not in noise and "Dr" not in noise and "St" not in noise
+    assert any("Chen" in n for n in noise)  # 稱謂後的真名保留
 
     t = domain_targets({"a": 0.5, "b": 0.3, "c": 0.2}, 10)
     assert sum(t.values()) == 10 and t["a"] == 5
