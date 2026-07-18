@@ -248,7 +248,9 @@ def main():
     ap.add_argument("--out", default="corpus/corpus_5k.jsonl")
     ap.add_argument("--report", default="corpus/gen_report_5k.json")
     ap.add_argument("--prompts-md", default="corpus/PROMPTS.md")
-    ap.add_argument("--model", default="gemini-2.5-flash")
+    # 2.5-flash 對新帳號已下架(2026-07-18 實測 404);3.5-flash 為現行穩定款,
+    # 避開 -latest floating alias 與 preview(釘版紀律)
+    ap.add_argument("--model", default="gemini-3.5-flash")
     ap.add_argument("--batch-size", type=int, default=30)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--max-batches", type=int, default=0, help="0 = 不限,>0 供小額試跑")
