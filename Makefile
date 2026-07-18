@@ -31,3 +31,8 @@ corpus-pilot:
 
 corpusgen-selftest:
 	uv run cmd/corpusgen/corpusgen.py --selftest
+
+# 順序 3:5k 語料 embed(#16 task_type=document;#17 manifest 自動出)
+embed-5k:
+	go run ./cmd/embed --in corpus/corpus_5k.jsonl --out corpus/vectors_5k.jsonl \
+		--task-type document

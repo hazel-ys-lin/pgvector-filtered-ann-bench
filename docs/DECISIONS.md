@@ -26,3 +26,5 @@
 | 13 | 語料生成模型 | **Gemini**。理由:與 embedding(#9)同家、一把 API key、個人帳號運維單純。具體 model id 與生成參數於首批生成時釘定,全文記入 corpus/PROMPTS.md(B.4)。 |
 | 14 | corpusgen 實作語言 | **Python**(A.1 已註記)。理由:prompt 迭代速度;去重/監控邏輯輕量。harness 主體仍 Go——corpusgen 不碰 DB,A.0 原則 4 不受影響。 |
 | 15 | 配比機制 | **(iii) 混合制**:多數域等配比 + 專屬小域供低檔位 + 高檔位域群組聯集,映射表入 B.1(初始案,5k 實跑 GLS 後可調)。連動修正 B.3 檢查 7 為**分檔位準則**:散開型全檔位 r ≈ 1(±0.15);聚集型 p07/p3/p6 須顯著偏離 1;p15/p50 不設硬門檻、實測披露(域聯集稀釋為量測對象)。 |
+| 16 | Embedding task_type | **非對稱釘定**:語料 = `RETRIEVAL_DOCUMENT`,query = `RETRIEVAL_QUERY`;COCO 參照樣本與語料同 task type(`RETRIEVAL_DOCUMENT`)——參照分佈與待驗分佈必須同一嵌入條件,否則檢查 1/2 失效。附帶驗收:768d 截斷輸出非單位範數,loader 必正規化並斷言 |v|≈1,pre-norm 統計記入 manifest。 |
+| 17 | 向量檔規格 | **JSONL 極簡**:`{id, embedding}`,text/domain 留在語料檔靠 id join(單一事實來源、release assets 體積小)。**每個向量檔配 manifest**(`*.manifest.json`):schema_version、source_file + sha256、model、task_type、output_dimensionality、normalized、records、git_commit、generated_at——結果列回溯鏈(A.0 原則 2)的語料端錨點。 |
