@@ -1,0 +1,323 @@
+{
+  "config": "configs/domains_v1.toml",
+  "model": "gemini-3.5-flash",
+  "seed": 42,
+  "targets": {
+    "studio photography": 35,
+    "esports & board games": 150,
+    "dance rehearsals": 150,
+    "festival parades": 150,
+    "weddings": 150,
+    "graduation ceremonies": 150,
+    "street markets": 150,
+    "coffee & desserts": 150,
+    "museum exhibitions": 150,
+    "sports events": 167,
+    "music performances": 167,
+    "hiking & mountaineering": 167,
+    "beach activities": 167,
+    "cooking & cuisine": 167,
+    "animals & pets": 167,
+    "wildlife": 167,
+    "city streetscapes": 167,
+    "architecture & landmarks": 167,
+    "transportation": 166,
+    "gardening & plants": 166,
+    "work scenes": 166,
+    "medical scenes": 166,
+    "classrooms & courses": 166,
+    "children's play": 166,
+    "religious ceremonies": 211,
+    "agriculture & fishing": 211,
+    "construction & manufacturing": 211,
+    "tech expos": 211,
+    "camping & picnics": 211,
+    "volunteering & charity": 211
+  },
+  "counts": {
+    "religious ceremonies": 211,
+    "tech expos": 211,
+    "construction & manufacturing": 211,
+    "volunteering & charity": 211,
+    "agriculture & fishing": 211,
+    "camping & picnics": 211,
+    "animals & pets": 167,
+    "wildlife": 167,
+    "architecture & landmarks": 167,
+    "cooking & cuisine": 167,
+    "hiking & mountaineering": 167,
+    "city streetscapes": 167,
+    "music performances": 167,
+    "beach activities": 167,
+    "sports events": 167,
+    "transportation": 166,
+    "classrooms & courses": 166,
+    "gardening & plants": 166,
+    "children's play": 166,
+    "work scenes": 166,
+    "medical scenes": 166,
+    "esports & board games": 150,
+    "dance rehearsals": 150,
+    "coffee & desserts": 150,
+    "weddings": 150,
+    "graduation ceremonies": 150,
+    "street markets": 150,
+    "festival parades": 150,
+    "museum exhibitions": 150,
+    "studio photography": 35
+  },
+  "records_total": 5000,
+  "cross_batch_dup_rate": 0.0,
+  "cross_batch_dup_alarm": false,
+  "name_collapse": {
+    "repeated_names_top20": {
+      "Leo": 56,
+      "Liam": 55,
+      "Maya": 47,
+      "Toby": 43,
+      "Chloe": 43,
+      "Elena": 42,
+      "Sarah": 42,
+      "Lily": 41,
+      "Marcus": 41,
+      "Arthur": 34,
+      "Clara": 33,
+      "Julian": 29,
+      "Mateo": 26,
+      "Priya": 25,
+      "Beatrice": 25,
+      "Evelyn": 25,
+      "Zoe": 24,
+      "Lucas": 23,
+      "Sophia": 22,
+      "Ethan": 21
+    },
+    "records_with_name_fraction": 0.7654
+  },
+  "per_domain_text_dup_rate": {
+    "religious ceremonies": 0.0,
+    "tech expos": 0.0,
+    "construction & manufacturing": 0.0,
+    "volunteering & charity": 0.0,
+    "agriculture & fishing": 0.0,
+    "camping & picnics": 0.0,
+    "animals & pets": 0.0,
+    "wildlife": 0.0,
+    "architecture & landmarks": 0.0,
+    "cooking & cuisine": 0.0,
+    "hiking & mountaineering": 0.0,
+    "city streetscapes": 0.0,
+    "music performances": 0.0,
+    "beach activities": 0.0,
+    "sports events": 0.0,
+    "transportation": 0.0,
+    "classrooms & courses": 0.0,
+    "gardening & plants": 0.0,
+    "children's play": 0.0,
+    "work scenes": 0.0,
+    "medical scenes": 0.0,
+    "esports & board games": 0.0,
+    "dance rehearsals": 0.0,
+    "coffee & desserts": 0.0,
+    "weddings": 0.0,
+    "graduation ceremonies": 0.0,
+    "street markets": 0.0,
+    "festival parades": 0.0,
+    "museum exhibitions": 0.0,
+    "studio photography": 0.0
+  },
+  "watchlist": {
+    "religious ceremonies": {
+      "text_dup_rate": 0.0,
+      "note": "B.3 檢查 5 預先觀察名單(文字層預警;正式判定在 embedding 空間)"
+    }
+  },
+  "batch_discard_curve": [
+    [
+      1,
+      "construction & manufacturing",
+      0,
+      0
+    ],
+    [
+      2,
+      "museum exhibitions",
+      0,
+      0
+    ],
+    [
+      3,
+      "graduation ceremonies",
+      0,
+      0
+    ],
+    [
+      4,
+      "coffee & desserts",
+      0,
+      0
+    ],
+    [
+      5,
+      "dance rehearsals",
+      0,
+      0
+    ],
+    [
+      6,
+      "weddings",
+      0,
+      0
+    ],
+    [
+      7,
+      "festival parades",
+      0,
+      0
+    ],
+    [
+      8,
+      "esports & board games",
+      0,
+      0
+    ],
+    [
+      9,
+      "street markets",
+      0,
+      0
+    ],
+    [
+      10,
+      "animals & pets",
+      0,
+      0
+    ],
+    [
+      11,
+      "architecture & landmarks",
+      0,
+      0
+    ],
+    [
+      12,
+      "cooking & cuisine",
+      0,
+      0
+    ],
+    [
+      13,
+      "beach activities",
+      0,
+      0
+    ],
+    [
+      14,
+      "hiking & mountaineering",
+      0,
+      0
+    ],
+    [
+      15,
+      "wildlife",
+      0,
+      0
+    ],
+    [
+      16,
+      "music performances",
+      0,
+      0
+    ],
+    [
+      17,
+      "city streetscapes",
+      0,
+      0
+    ],
+    [
+      18,
+      "sports events",
+      0,
+      0
+    ],
+    [
+      19,
+      "transportation",
+      0,
+      0
+    ],
+    [
+      20,
+      "work scenes",
+      0,
+      0
+    ],
+    [
+      21,
+      "children's play",
+      0,
+      0
+    ],
+    [
+      22,
+      "gardening & plants",
+      0,
+      0
+    ],
+    [
+      23,
+      "classrooms & courses",
+      0,
+      0
+    ],
+    [
+      24,
+      "medical scenes",
+      0,
+      0
+    ],
+    [
+      25,
+      "studio photography",
+      0,
+      0
+    ],
+    [
+      26,
+      "camping & picnics",
+      0,
+      0
+    ],
+    [
+      27,
+      "tech expos",
+      0,
+      0
+    ],
+    [
+      28,
+      "volunteering & charity",
+      0,
+      0
+    ],
+    [
+      29,
+      "religious ceremonies",
+      0,
+      0
+    ],
+    [
+      30,
+      "construction & manufacturing",
+      0,
+      0
+    ],
+    [
+      31,
+      "agriculture & fishing",
+      0,
+      0
+    ]
+  ]
+}

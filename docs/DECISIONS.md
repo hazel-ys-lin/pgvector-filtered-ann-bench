@@ -19,7 +19,7 @@
 | # | 決定點 | 拍板 |
 |---|---|---|
 | 8 | 語料語言 | **英文**。理由:公開 repo 的可審查性(讀者可抽查語料)、PROMPTS.md 方法重現價值、英文公開授權參照資料集可得性。代價:中文錨點降為僅示意(原本即標注僅量級參考,可承受)。B.1 域表/B.2 prompt/query 集已同步英文化。 |
-| 9 | Embedding 模型 | **gemini-embedding-001, 768d**。理由:索引尺寸合理、POC 全程行為熟悉、錨點連續性。dims 已參數化,換模型成本 = 重建參照分佈。執行注記:embed loader 併發與配額依**個人帳號**現行限制查定,不沿用公司帳號印象(**待辦**)。 |
+| 9 | Embedding 模型 | **gemini-embedding-001, 768d**。理由:索引尺寸合理、POC 全程行為熟悉、錨點連續性。dims 已參數化,換模型成本 = 重建參照分佈。~~執行注記:配額依個人帳號查定(待辦)~~ **2026-07-18 銷案**:配額實測 free tier = 20 req/天/模型(生成 5k 時撞牆),帳號已升 Tier 1(prepay);embed loader 併發參數以 Tier 1 限額設計,實跑再校。 |
 | 10 | 真實文字參照樣本 | **COCO Captions 抽 1000 筆**(與待驗語料同文體 photo caption,參照效度依據)。~~待辦:CC BY 4.0 授權現況查證~~ **2026-07-18 銷案**:author 親閱 COCO 條款頁確認無誤(證據存檔 `coco_termsofuse_evidence_20260718.htm`),validate 參照分佈部分解鎖。 |
 | 11 | 冒煙 recall 門檻 | **0.95 裁決通過**(高斯向量為 B.3 定義之病態幾何,0.99 屬順序 3 真語料之檢查 6,不變)。附帶條件:recall 量測 query 斷言 PlanType = hnsw_index,結構性保證測的是 ANN 路徑(DESIGN 動工順序 2 加註)。 |
 | 12 | force_index 活註記 | 順序 2 發現 ef-cost 翻轉現象(cost 隨 ef_search 線性放大,10k 實測 ef=400 時 seq+sort 勝出),force_index 可能因處置 (d')(= force_index + 深 ef,拆分演算法效果與含 planner 反應的實際效果)復活。**100k 實跑後裁決是否恢復枚舉**(DESIGN A.5b 加註)。 |
