@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-18T11:35:27Z",
+  "generated_at": "2026-07-18T11:48:20Z",
   "corpus_file": "corpus/corpus_5k.jsonl",
   "vectors_file": "corpus/vectors_5k.jsonl",
   "ref_file": "corpus/coco_ref_1k_vec.jsonl",
@@ -10,7 +10,7 @@
       "check": 1,
       "name": "pairwise distance median",
       "value": {
-        "corpus": 0.2804,
+        "corpus": 0.2801,
         "ref": 0.2931
       },
       "criterion": "corpus median within ref ±0.05",
@@ -20,7 +20,7 @@
       "check": 2,
       "name": "distance concentration (std/mean)",
       "value": {
-        "corpus": 0.1234,
+        "corpus": 0.125,
         "ref": 0.1289
       },
       "criterion": "corpus std/mean \u003e= 0.7 × ref",
@@ -29,7 +29,7 @@
     {
       "check": 3,
       "name": "near-duplicate rate (NN dist \u003c 0.05)",
-      "value": 0.0106,
+      "value": 0.0192,
       "criterion": "1%–3%(沿用初始值,B.3 註記可校準)",
       "pass": true,
       "note": "低於 1% 屬『好的一側』越界——ties 崩 recall 的風險僅在過高側"
@@ -37,7 +37,7 @@
     {
       "check": 4,
       "name": "intra/cross domain distance ratio",
-      "value": 0.845,
+      "value": 0.8387,
       "criterion": "0.6–0.9(沿用初始值,模型/域粒度敏感,可校準)",
       "pass": true
     },
@@ -74,11 +74,11 @@
           "transportation": 0.012,
           "volunteering \u0026 charity": 0,
           "weddings": 0,
-          "wildlife": 0.0898,
+          "wildlife": 0.3473,
           "work scenes": 0
         },
         "worst_domain": "wildlife",
-        "worst_rate": 0.0898
+        "worst_rate": 0.3473
       },
       "criterion": "every domain \u003c 5%",
       "pass": false
@@ -86,7 +86,7 @@
     {
       "check": 6,
       "name": "end-to-end recall (no-filter, ef=200, k=50)",
-      "value": 1,
+      "value": 0.9992,
       "criterion": "\u003e= 0.99, plan asserted hnsw_index",
       "pass": true
     }

@@ -23,6 +23,11 @@ background = [
   "camping & picnics", "volunteering & charity",
 ]
 
+# Per-domain 追加約束(corpusgen 附加於 user prompt;PROMPTS.md 自動揭露)。
+# wildlife:2026-07-18 檢查 5 失敗(8.98% 場景原型塌縮)重生時加入。
+[domain_hints]
+"wildlife" = "Vary species widely across records; avoid iconic textbook scenes (sea otter cracking an urchin, barn owl on a rafter, hummingbird at a red flower, platypus in a misty creek); prefer uncommon species, behaviors, habitats, seasons, and geographic regions."
+
 [proportions]
 "studio photography" = 0.007
 "esports & board games" = 0.030

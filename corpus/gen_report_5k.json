@@ -42,7 +42,6 @@
     "agriculture & fishing": 211,
     "camping & picnics": 211,
     "animals & pets": 167,
-    "wildlife": 167,
     "architecture & landmarks": 167,
     "cooking & cuisine": 167,
     "hiking & mountaineering": 167,
@@ -64,7 +63,8 @@
     "street markets": 150,
     "festival parades": 150,
     "museum exhibitions": 150,
-    "studio photography": 35
+    "studio photography": 35,
+    "wildlife": 167
   },
   "records_total": 5000,
   "cross_batch_dup_rate": 0.0,
@@ -92,7 +92,7 @@
       "Sophia": 22,
       "Ethan": 21
     },
-    "records_with_name_fraction": 0.7654
+    "records_with_name_fraction": 0.7766
   },
   "per_domain_text_dup_rate": {
     "religious ceremonies": 0.0,
@@ -102,7 +102,6 @@
     "agriculture & fishing": 0.0,
     "camping & picnics": 0.0,
     "animals & pets": 0.0,
-    "wildlife": 0.0,
     "architecture & landmarks": 0.0,
     "cooking & cuisine": 0.0,
     "hiking & mountaineering": 0.0,
@@ -124,7 +123,8 @@
     "street markets": 0.0,
     "festival parades": 0.0,
     "museum exhibitions": 0.0,
-    "studio photography": 0.0
+    "studio photography": 0.0,
+    "wildlife": 0.0
   },
   "watchlist": {
     "religious ceremonies": {
@@ -135,187 +135,37 @@
   "batch_discard_curve": [
     [
       1,
-      "construction & manufacturing",
-      0,
-      0
-    ],
-    [
-      2,
-      "museum exhibitions",
-      0,
-      0
-    ],
-    [
-      3,
-      "graduation ceremonies",
-      0,
-      0
-    ],
-    [
-      4,
-      "coffee & desserts",
-      0,
-      0
-    ],
-    [
-      5,
-      "dance rehearsals",
-      0,
-      0
-    ],
-    [
-      6,
-      "weddings",
-      0,
-      0
-    ],
-    [
-      7,
-      "festival parades",
-      0,
-      0
-    ],
-    [
-      8,
-      "esports & board games",
-      0,
-      0
-    ],
-    [
-      9,
-      "street markets",
-      0,
-      0
-    ],
-    [
-      10,
-      "animals & pets",
-      0,
-      0
-    ],
-    [
-      11,
-      "architecture & landmarks",
-      0,
-      0
-    ],
-    [
-      12,
-      "cooking & cuisine",
-      0,
-      0
-    ],
-    [
-      13,
-      "beach activities",
-      0,
-      0
-    ],
-    [
-      14,
-      "hiking & mountaineering",
-      0,
-      0
-    ],
-    [
-      15,
       "wildlife",
       0,
       0
     ],
     [
-      16,
-      "music performances",
+      2,
+      "wildlife",
       0,
       0
     ],
     [
-      17,
-      "city streetscapes",
+      3,
+      "wildlife",
       0,
       0
     ],
     [
-      18,
-      "sports events",
+      4,
+      "wildlife",
       0,
       0
     ],
     [
-      19,
-      "transportation",
+      5,
+      "wildlife",
       0,
       0
     ],
     [
-      20,
-      "work scenes",
-      0,
-      0
-    ],
-    [
-      21,
-      "children's play",
-      0,
-      0
-    ],
-    [
-      22,
-      "gardening & plants",
-      0,
-      0
-    ],
-    [
-      23,
-      "classrooms & courses",
-      0,
-      0
-    ],
-    [
-      24,
-      "medical scenes",
-      0,
-      0
-    ],
-    [
-      25,
-      "studio photography",
-      0,
-      0
-    ],
-    [
-      26,
-      "camping & picnics",
-      0,
-      0
-    ],
-    [
-      27,
-      "tech expos",
-      0,
-      0
-    ],
-    [
-      28,
-      "volunteering & charity",
-      0,
-      0
-    ],
-    [
-      29,
-      "religious ceremonies",
-      0,
-      0
-    ],
-    [
-      30,
-      "construction & manufacturing",
-      0,
-      0
-    ],
-    [
-      31,
-      "agriculture & fishing",
+      6,
+      "wildlife",
       0,
       0
     ]

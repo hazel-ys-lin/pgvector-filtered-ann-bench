@@ -52,6 +52,10 @@ Generate {n} records. Diversity axes (vary at least three per record):
 number and age of participants / indoor vs outdoor / weather / time of day /
 mood / camera distance (close-up to wide shot) / primary objects"""
 
+# per-domain 追加約束(TOML [domain_hints];檢查 5 失敗域的重生機制,
+# 全文記入 PROMPTS.md 揭露)
+HINT_TEMPLATE = "\nAdditional constraint for this domain: {hint}"
+
 REQUIRED_KEYS = {"text", "domain", "scene", "objects", "time_of_day"}
 JACCARD_THRESHOLD = 0.6   # B.2:同批 > 0.6 丟棄
 CROSS_BATCH_WARN = 0.02   # B.2:跨批抽樣重複率 > 2% 即報
@@ -214,19 +218,23 @@ class Monitors:
 
 # ---- 生成主流程 ----
 
-def load_existing(out_path: pathlib.Path, monitors: Monitors) -> collections.Counter:
+def load_existing(out_path: pathlib.Path, monitors: Monitors) -> tuple[collections.Counter, int]:
+    """回傳 (各域筆數, 既有最大 id)。id 配號必須 max+1:
+    域重生(刪舊筆)後 sum+1 會與既有 id 相撞。"""
     counts = collections.Counter()
+    max_id = 0
     if not out_path.exists():
-        return counts
+        return counts, max_id
     with out_path.open() as f:
         for line in f:
             obj = json.loads(line)
             counts[obj["domain"]] += 1
+            max_id = max(max_id, obj["id"])
             monitors.note_accept(obj["domain"], trigrams(obj["text"]), obj["text"])
-    return counts
+    return counts, max_id
 
 
-def write_prompts_md(path: pathlib.Path, model: str, args):
+def write_prompts_md(path: pathlib.Path, model: str, args, hints: dict):
     path.write_text(f"""# PROMPTS.md — 語料生成方法全文(B.4;方法可重現本身是賣點)
 
 - 生成模型(DECISIONS #13,首批釘定):`{model}`
@@ -247,6 +255,12 @@ def write_prompts_md(path: pathlib.Path, model: str, args):
 
 ```
 {USER_TEMPLATE}
+```
+
+## Per-domain 追加約束(domain_hints;檢查 5 失敗域重生用,揭露義務)
+
+```
+{json.dumps(hints, indent=2, ensure_ascii=False) if hints else "(none)"}
 ```
 """)
 
@@ -290,6 +304,7 @@ def main():
         cfg = tomllib.load(f)
     proportions = cfg["proportions"]
     tiers = cfg["tiers"]
+    hints = cfg.get("domain_hints", {})
     all_domains = [d for ds in tiers.values() for d in ds]
     missing = set(all_domains) ^ set(proportions)
     if missing:
@@ -299,14 +314,14 @@ def main():
     monitors = Monitors(rng)
     out_path = pathlib.Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    counts = load_existing(out_path, monitors)
+    counts, max_id = load_existing(out_path, monitors)
     if counts:
-        print(f"[resume] {sum(counts.values())} existing records loaded")
+        print(f"[resume] {sum(counts.values())} existing records loaded (max id {max_id})")
 
     targets = domain_targets(proportions, args.total)
-    next_id = sum(counts.values()) + 1
+    next_id = max_id + 1
     batch_no = 0
-    write_prompts_md(pathlib.Path(args.prompts_md), args.model, args)
+    write_prompts_md(pathlib.Path(args.prompts_md), args.model, args, hints)
 
     with out_path.open("a") as out:
         while True:
@@ -319,9 +334,12 @@ def main():
             batch_no += 1
             temp = rng.uniform(0.9, 1.1)
             try:
+                user_prompt = USER_TEMPLATE.format(domain=domain, n=n)
+                if domain in hints:
+                    user_prompt += HINT_TEMPLATE.format(hint=hints[domain])
                 resp = client.models.generate_content(
                     model=args.model,
-                    contents=USER_TEMPLATE.format(domain=domain, n=n),
+                    contents=user_prompt,
                     config=types.GenerateContentConfig(
                         system_instruction=SYSTEM_PROMPT, temperature=temp),
                 )

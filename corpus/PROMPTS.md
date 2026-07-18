@@ -29,3 +29,11 @@ Generate {n} records. Diversity axes (vary at least three per record):
 number and age of participants / indoor vs outdoor / weather / time of day /
 mood / camera distance (close-up to wide shot) / primary objects
 ```
+
+## Per-domain 追加約束(domain_hints;檢查 5 失敗域重生用,揭露義務)
+
+```
+{
+  "wildlife": "Vary species widely across records; avoid iconic textbook scenes (sea otter cracking an urchin, barn owl on a rafter, hummingbird at a red flower, platypus in a misty creek); prefer uncommon species, behaviors, habitats, seasons, and geographic regions."
+}
+```
