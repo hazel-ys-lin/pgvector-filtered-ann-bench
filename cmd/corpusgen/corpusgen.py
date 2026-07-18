@@ -259,7 +259,16 @@ def main():
         return selftest()
 
     if not os.environ.get("GEMINI_API_KEY"):
-        sys.exit("GEMINI_API_KEY not set(#9 執行注記:個人帳號,配額先查)")
+        # 直接 uv run(不經 make)時自行讀 repo 根目錄 .env
+        env_file = pathlib.Path(__file__).resolve().parents[2] / ".env"
+        if env_file.exists():
+            for line in env_file.read_text().splitlines():
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, _, v = line.partition("=")
+                    os.environ.setdefault(k.strip(), v.strip())
+    if not os.environ.get("GEMINI_API_KEY"):
+        sys.exit("GEMINI_API_KEY not set(.env 或環境變數;#9 執行注記:個人帳號,配額先查)")
     from google import genai
     from google.genai import types
     client = genai.Client()
