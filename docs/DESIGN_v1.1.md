@@ -266,6 +266,7 @@ mood / camera distance (close-up to wide shot) / primary objects
 3. corpusgen + embed + validate(含 GLS),5k 小語料過七項檢查(1 週末)
 
 4. filters + query + GT 快取 + bench runner,小語料跑通主矩陣與四方對照(1 週末)
+   (2026-07-19 注記:①檢查 7 是 bench runner 前的閘門——GLS 就位先跑 5k,按 #15 分檔位準則裁定,綠了才跑 bench;scattered 側 GLS ≈1 兼作指派程式正確性檢查。②**5k bench run 定位 = 管線彩排,非現象量測**——小表 planner 大量正確選精確路徑、recall 滿屏 1.0 是規模不足的預期行為,不是 bug,不要修;驗收標的 = 管線端到端通、輸出 schema 凍結、GT 快取命中正確、EXPLAIN 全量落盤、stratum 分層報表能出;現象等 100k。③輸出 schema 凍結前對 README 第 6 節每張圖表倒推欄位;每行至少:配置全參(tier/side/plan_mode/ef/iterative)、recall、延遲分位、PlanType、expected_id_hit、stratum、seed、GT 快取 key。)
 
 5. 100k 全量生成與正式 sweep(掛機)
 

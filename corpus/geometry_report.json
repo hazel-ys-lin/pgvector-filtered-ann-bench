@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-18T12:16:26Z",
+  "generated_at": "2026-07-19T03:02:25Z",
   "corpus_file": "corpus/corpus_5k.jsonl",
   "vectors_file": "corpus/vectors_5k.jsonl",
   "ref_file": "corpus/coco_ref_1k_vec.jsonl",
@@ -37,7 +37,7 @@
     {
       "check": 4,
       "name": "intra/cross domain distance ratio",
-      "value": 0.8396,
+      "value": 0.8392,
       "criterion": "0.6–0.9(沿用初始值,模型/域粒度敏感,可校準)",
       "pass": true
     },
@@ -89,6 +89,230 @@
       "value": 0.9996,
       "criterion": "\u003e= 0.99, plan asserted hnsw_index",
       "pass": true
+    },
+    {
+      "check": 7,
+      "name": "GLS construction validation",
+      "value": [
+        {
+          "tier": "p07",
+          "sigma_g": 0.007,
+          "clustered_enriched": {
+            "n_queries": 18,
+            "sigma_g": 0.007,
+            "pass_total": 76,
+            "expected_count_if_r1": 6.3,
+            "pooled_r": 12.063492063492063
+          },
+          "clustered_cross": {
+            "n_queries": 306,
+            "sigma_g": 0.007,
+            "pass_total": 31,
+            "expected_count_if_r1": 107.10000000000001,
+            "pooled_r": 0.2894491129785247
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.007,
+              "pass_total": 99,
+              "expected_count_if_r1": 113.4,
+              "pooled_r": 0.873015873015873
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.007,
+              "pass_total": 114,
+              "expected_count_if_r1": 113.4,
+              "pooled_r": 1.0052910052910053
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.007,
+              "pass_total": 123,
+              "expected_count_if_r1": 113.4,
+              "pooled_r": 1.0846560846560847
+            }
+          ],
+          "gate": "hard",
+          "pass": true
+        },
+        {
+          "tier": "p3",
+          "sigma_g": 0.03,
+          "clustered_enriched": {
+            "n_queries": 18,
+            "sigma_g": 0.03,
+            "pass_total": 450,
+            "expected_count_if_r1": 27,
+            "pooled_r": 16.666666666666668
+          },
+          "clustered_cross": {
+            "n_queries": 306,
+            "sigma_g": 0.03,
+            "pass_total": 195,
+            "expected_count_if_r1": 459,
+            "pooled_r": 0.42483660130718953
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.03,
+              "pass_total": 468,
+              "expected_count_if_r1": 486,
+              "pooled_r": 0.9629629629629629
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.03,
+              "pass_total": 481,
+              "expected_count_if_r1": 486,
+              "pooled_r": 0.9897119341563786
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.03,
+              "pass_total": 518,
+              "expected_count_if_r1": 486,
+              "pooled_r": 1.0658436213991769
+            }
+          ],
+          "gate": "hard",
+          "pass": true
+        },
+        {
+          "tier": "p6",
+          "sigma_g": 0.06,
+          "clustered_enriched": {
+            "n_queries": 18,
+            "sigma_g": 0.06,
+            "pass_total": 615,
+            "expected_count_if_r1": 54,
+            "pooled_r": 11.38888888888889
+          },
+          "clustered_cross": {
+            "n_queries": 306,
+            "sigma_g": 0.06,
+            "pass_total": 456,
+            "expected_count_if_r1": 918,
+            "pooled_r": 0.49673202614379086
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.06,
+              "pass_total": 959,
+              "expected_count_if_r1": 972,
+              "pooled_r": 0.9866255144032922
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.06,
+              "pass_total": 986,
+              "expected_count_if_r1": 972,
+              "pooled_r": 1.01440329218107
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.06,
+              "pass_total": 979,
+              "expected_count_if_r1": 972,
+              "pooled_r": 1.007201646090535
+            }
+          ],
+          "gate": "hard",
+          "pass": true
+        },
+        {
+          "tier": "p15",
+          "sigma_g": 0.15,
+          "clustered_enriched": {
+            "n_queries": 45,
+            "sigma_g": 0.15,
+            "pass_total": 1411,
+            "expected_count_if_r1": 337.5,
+            "pooled_r": 4.180740740740741
+          },
+          "clustered_cross": {
+            "n_queries": 279,
+            "sigma_g": 0.15,
+            "pass_total": 1269,
+            "expected_count_if_r1": 2092.5,
+            "pooled_r": 0.6064516129032258
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.15,
+              "pass_total": 2382,
+              "expected_count_if_r1": 2430,
+              "pooled_r": 0.980246913580247
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.15,
+              "pass_total": 2262,
+              "expected_count_if_r1": 2430,
+              "pooled_r": 0.9308641975308642
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.15,
+              "pass_total": 2320,
+              "expected_count_if_r1": 2430,
+              "pooled_r": 0.9547325102880658
+            }
+          ],
+          "gate": "observe",
+          "pass": true
+        },
+        {
+          "tier": "p50",
+          "sigma_g": 0.4998,
+          "clustered_enriched": {
+            "n_queries": 153,
+            "sigma_g": 0.4998,
+            "pass_total": 5349,
+            "expected_count_if_r1": 3823.4700000000003,
+            "pooled_r": 1.3989909689365942
+          },
+          "clustered_cross": {
+            "n_queries": 171,
+            "sigma_g": 0.4998,
+            "pass_total": 2193,
+            "expected_count_if_r1": 4273.29,
+            "pooled_r": 0.513187731232844
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.4998,
+              "pass_total": 8085,
+              "expected_count_if_r1": 8096.76,
+              "pooled_r": 0.9985475671750181
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.4998,
+              "pass_total": 8100,
+              "expected_count_if_r1": 8096.76,
+              "pooled_r": 1.0004001600640255
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.4998,
+              "pass_total": 8144,
+              "expected_count_if_r1": 8096.76,
+              "pooled_r": 1.0058344325384474
+            }
+          ],
+          "gate": "record",
+          "pass": true
+        }
+      ],
+      "criterion": "clustered enriched pooled r \u003e= 2 (p07/p3/p6 hard; p15 observe; p50 record); scattered all tiers r in [0.85, 1.15]",
+      "pass": true,
+      "note": "σ_l 出自 float32 量化的無 filter 精確 top-50;scattered 偏離 = 指派程式 bug 訊號"
     }
   ],
   "all_pass": true
