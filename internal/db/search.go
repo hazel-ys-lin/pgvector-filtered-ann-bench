@@ -34,6 +34,19 @@ func buildSearchSQL(q query.Query, k int) (sql string, args []any, err error) {
 		TableName, q.Filter.Column, k), []any{vec, q.Filter.Value}, nil
 }
 
+// DistanceTo 回傳 DB 端 cosine 距離(embedding <=> $1),供 #21 Q2 的
+// 距離對齊測試——Go 裁判與被測系統的距離定義若漂移,在 bench 起跑前抓住。
+func (d *DB) DistanceTo(ctx context.Context, id int64, vec []float32) (float64, error) {
+	var dist float64
+	err := d.conn.QueryRow(ctx,
+		fmt.Sprintf("SELECT embedding <=> $1 FROM %s WHERE id = $2", TableName),
+		pgvector.NewVector(vec), id).Scan(&dist)
+	if err != nil {
+		return 0, fmt.Errorf("db: distance to %d: %w", id, err)
+	}
+	return dist, nil
+}
+
 // SearchANN 執行查詢並回傳 id 與 client round-trip 延遲(DECISIONS.md #7)。
 // 回傳筆數可能 < k(iterative off 且 ef < k 時的截斷即量測對象),不在此擋。
 func (d *DB) SearchANN(ctx context.Context, q query.Query, cfg config.SweepConfig) ([]int64, time.Duration, error) {

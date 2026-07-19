@@ -6,3 +6,4 @@
 # PROMPTS.md 與 gen_report/geometry_report 要進 git
 corpus/*.jsonl
 .venv/
+results/

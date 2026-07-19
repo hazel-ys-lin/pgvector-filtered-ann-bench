@@ -46,8 +46,14 @@ embed-coco:
 	go run ./cmd/embed --in corpus/coco_ref_1k.jsonl --out corpus/coco_ref_1k_vec.jsonl \
 		--task-type document
 
-# 順序 3:幾何檢查 1–6(檢查 6 需 DB;up 先)
+# 順序 3:幾何檢查 1–7(檢查 6 需 DB;up 先。檢查 7 是 bench 前閘門)
 validate: up
 	DATABASE_URL=$(DATABASE_URL) go run ./cmd/validate \
 		--corpus corpus/corpus_5k.jsonl --vectors corpus/vectors_5k.jsonl \
-		--ref corpus/coco_ref_1k_vec.jsonl --report corpus/geometry_report.json
+		--ref corpus/coco_ref_1k_vec.jsonl \
+		--queries corpus/queries_5k.jsonl --query-vectors corpus/queries_5k_vec.jsonl \
+		--report corpus/geometry_report.json
+
+# 順序 4:5k 彩排(管線驗證,非現象量測——動工順序 4 注記②)
+bench-5k: up
+	DATABASE_URL=$(DATABASE_URL) go run ./cmd/bench --out-dir results/run_5k
