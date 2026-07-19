@@ -82,7 +82,7 @@ func classifyPlan(root planNode) string {
 				hasHNSW = true
 			}
 		case "Bitmap Index Scan":
-			if n.IndexName == ClusteredIndexName || n.IndexName == ScatteredIndexName {
+			if isMetaIndex(n.IndexName) {
 				hasBitmapMeta = true
 			}
 		case "Seq Scan":
@@ -109,6 +109,18 @@ func classifyPlan(root planNode) string {
 
 // verifyPlanMode:force_exact 的生效判準 = seq_scan 或 bitmap_meta
 // (兩種精確路徑皆可,DECISIONS.md #1);auto 不設限。
+func isMetaIndex(name string) bool {
+	if name == ClusteredIndexName {
+		return true
+	}
+	for _, n := range ScatteredIndexNames {
+		if name == n {
+			return true
+		}
+	}
+	return false
+}
+
 func verifyPlanMode(planMode, planType string) error {
 	if planMode != "force_exact" {
 		return nil

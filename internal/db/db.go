@@ -21,7 +21,17 @@ const (
 	TableName          = "items"
 	HNSWIndexName      = "items_embedding_hnsw"
 	ClusteredIndexName = "items_label_clustered_btree"
-	ScatteredIndexName = "items_label_scattered_btree"
+)
+
+// ScatteredColumns / ScatteredIndexNames:3 filter-seed 各一欄一索引,
+// 一次灌庫(DECISIONS #24)。
+var (
+	ScatteredColumns    = []string{"label_scattered_s1", "label_scattered_s2", "label_scattered_s3"}
+	ScatteredIndexNames = []string{
+		"items_label_scattered_s1_btree",
+		"items_label_scattered_s2_btree",
+		"items_label_scattered_s3_btree",
+	}
 )
 
 // DB 持有單一 session 連線與 schema 參數(維度參數化,DECISIONS.md #5)。

@@ -58,7 +58,11 @@ func genRecords(rng *rand.Rand) []corpus.Record {
 			ID:             int64(i + 1),
 			Embedding:      v,
 			LabelClustered: int16(i * 10 / smokeN),
-			LabelScattered: int16(rng.Intn(smokeScatteredCard)),
+			LabelScattered: [3]int16{
+				int16(rng.Intn(smokeScatteredCard)),
+				int16(rng.Intn(smokeScatteredCard)),
+				int16(rng.Intn(smokeScatteredCard)),
+			},
 		}
 	}
 	return recs
@@ -210,7 +214,7 @@ func TestSmoke(t *testing.T) {
 	// 驗收 5c:force_exact + ~5% filter,期望 bitmap_meta;小數據誘發不出
 	// 則記錄待順序 4 驗證,不硬湊(seq_scan 亦屬 force_exact 合法精確路徑)
 	qf := q
-	qf.Filter = &query.Filter{Column: "label_scattered", Value: 3}
+	qf.Filter = &query.Filter{Column: "label_scattered_s1", Value: 3}
 	er, err = d.ExplainANN(ctx, qf, forced)
 	if err != nil {
 		t.Fatalf("explain force_exact filtered: %v", err)

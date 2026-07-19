@@ -40,7 +40,7 @@ func TestParseExplainClassify(t *testing.T) {
 			raw: `[{"Plan":{"Node Type":"Limit","Plans":[
 				{"Node Type":"Sort","Plans":[
 					{"Node Type":"Bitmap Heap Scan","Relation Name":"items","Plans":[
-						{"Node Type":"Bitmap Index Scan","Index Name":"items_label_scattered_btree"}
+						{"Node Type":"Bitmap Index Scan","Index Name":"items_label_scattered_s2_btree"}
 					]}
 				]}
 			]},"Execution Time":0.8}]`,

@@ -13,8 +13,10 @@ import (
 
 // filterColumns 是 Filter.Column 白名單:欄名進 SQL 前必經此表。
 var filterColumns = map[string]bool{
-	"label_clustered": true,
-	"label_scattered": true,
+	"label_clustered":    true,
+	"label_scattered_s1": true,
+	"label_scattered_s2": true,
+	"label_scattered_s3": true,
 }
 
 // buildSearchSQL 組出 ANN 查詢。GT 的精確版本由 force_exact session 決定

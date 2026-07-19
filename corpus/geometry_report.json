@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T03:02:25Z",
+  "generated_at": "2026-07-19T03:07:16Z",
   "corpus_file": "corpus/corpus_5k.jsonl",
   "vectors_file": "corpus/vectors_5k.jsonl",
   "ref_file": "corpus/coco_ref_1k_vec.jsonl",
@@ -37,7 +37,7 @@
     {
       "check": 4,
       "name": "intra/cross domain distance ratio",
-      "value": 0.8392,
+      "value": 0.8419,
       "criterion": "0.6–0.9(沿用初始值,模型/域粒度敏感,可校準)",
       "pass": true
     },
@@ -102,14 +102,16 @@
             "sigma_g": 0.007,
             "pass_total": 76,
             "expected_count_if_r1": 6.3,
-            "pooled_r": 12.063492063492063
+            "pooled_r": 12.063492063492063,
+            "sigma_l": 0.08444444444444445
           },
           "clustered_cross": {
             "n_queries": 306,
             "sigma_g": 0.007,
             "pass_total": 31,
             "expected_count_if_r1": 107.10000000000001,
-            "pooled_r": 0.2894491129785247
+            "pooled_r": 0.2894491129785247,
+            "sigma_l": 0.002026143790849673
           },
           "scattered_by_seed": [
             {
@@ -117,21 +119,24 @@
               "sigma_g": 0.007,
               "pass_total": 99,
               "expected_count_if_r1": 113.4,
-              "pooled_r": 0.873015873015873
+              "pooled_r": 0.873015873015873,
+              "sigma_l": 0.006111111111111111
             },
             {
               "n_queries": 324,
               "sigma_g": 0.007,
               "pass_total": 114,
               "expected_count_if_r1": 113.4,
-              "pooled_r": 1.0052910052910053
+              "pooled_r": 1.0052910052910053,
+              "sigma_l": 0.007037037037037038
             },
             {
               "n_queries": 324,
               "sigma_g": 0.007,
               "pass_total": 123,
               "expected_count_if_r1": 113.4,
-              "pooled_r": 1.0846560846560847
+              "pooled_r": 1.0846560846560847,
+              "sigma_l": 0.007592592592592593
             }
           ],
           "gate": "hard",
@@ -145,14 +150,16 @@
             "sigma_g": 0.03,
             "pass_total": 450,
             "expected_count_if_r1": 27,
-            "pooled_r": 16.666666666666668
+            "pooled_r": 16.666666666666668,
+            "sigma_l": 0.5
           },
           "clustered_cross": {
             "n_queries": 306,
             "sigma_g": 0.03,
             "pass_total": 195,
             "expected_count_if_r1": 459,
-            "pooled_r": 0.42483660130718953
+            "pooled_r": 0.42483660130718953,
+            "sigma_l": 0.012745098039215686
           },
           "scattered_by_seed": [
             {
@@ -160,21 +167,24 @@
               "sigma_g": 0.03,
               "pass_total": 468,
               "expected_count_if_r1": 486,
-              "pooled_r": 0.9629629629629629
+              "pooled_r": 0.9629629629629629,
+              "sigma_l": 0.028888888888888888
             },
             {
               "n_queries": 324,
               "sigma_g": 0.03,
               "pass_total": 481,
               "expected_count_if_r1": 486,
-              "pooled_r": 0.9897119341563786
+              "pooled_r": 0.9897119341563786,
+              "sigma_l": 0.029691358024691358
             },
             {
               "n_queries": 324,
               "sigma_g": 0.03,
               "pass_total": 518,
               "expected_count_if_r1": 486,
-              "pooled_r": 1.0658436213991769
+              "pooled_r": 1.0658436213991769,
+              "sigma_l": 0.03197530864197531
             }
           ],
           "gate": "hard",
@@ -188,14 +198,16 @@
             "sigma_g": 0.06,
             "pass_total": 615,
             "expected_count_if_r1": 54,
-            "pooled_r": 11.38888888888889
+            "pooled_r": 11.38888888888889,
+            "sigma_l": 0.6833333333333333
           },
           "clustered_cross": {
             "n_queries": 306,
             "sigma_g": 0.06,
             "pass_total": 456,
             "expected_count_if_r1": 918,
-            "pooled_r": 0.49673202614379086
+            "pooled_r": 0.49673202614379086,
+            "sigma_l": 0.02980392156862745
           },
           "scattered_by_seed": [
             {
@@ -203,21 +215,24 @@
               "sigma_g": 0.06,
               "pass_total": 959,
               "expected_count_if_r1": 972,
-              "pooled_r": 0.9866255144032922
+              "pooled_r": 0.9866255144032922,
+              "sigma_l": 0.059197530864197524
             },
             {
               "n_queries": 324,
               "sigma_g": 0.06,
               "pass_total": 986,
               "expected_count_if_r1": 972,
-              "pooled_r": 1.01440329218107
+              "pooled_r": 1.01440329218107,
+              "sigma_l": 0.060864197530864195
             },
             {
               "n_queries": 324,
               "sigma_g": 0.06,
               "pass_total": 979,
               "expected_count_if_r1": 972,
-              "pooled_r": 1.007201646090535
+              "pooled_r": 1.007201646090535,
+              "sigma_l": 0.0604320987654321
             }
           ],
           "gate": "hard",
@@ -231,14 +246,16 @@
             "sigma_g": 0.15,
             "pass_total": 1411,
             "expected_count_if_r1": 337.5,
-            "pooled_r": 4.180740740740741
+            "pooled_r": 4.180740740740741,
+            "sigma_l": 0.6271111111111111
           },
           "clustered_cross": {
             "n_queries": 279,
             "sigma_g": 0.15,
             "pass_total": 1269,
             "expected_count_if_r1": 2092.5,
-            "pooled_r": 0.6064516129032258
+            "pooled_r": 0.6064516129032258,
+            "sigma_l": 0.09096774193548386
           },
           "scattered_by_seed": [
             {
@@ -246,21 +263,24 @@
               "sigma_g": 0.15,
               "pass_total": 2382,
               "expected_count_if_r1": 2430,
-              "pooled_r": 0.980246913580247
+              "pooled_r": 0.980246913580247,
+              "sigma_l": 0.14703703703703705
             },
             {
               "n_queries": 324,
               "sigma_g": 0.15,
               "pass_total": 2262,
               "expected_count_if_r1": 2430,
-              "pooled_r": 0.9308641975308642
+              "pooled_r": 0.9308641975308642,
+              "sigma_l": 0.13962962962962963
             },
             {
               "n_queries": 324,
               "sigma_g": 0.15,
               "pass_total": 2320,
               "expected_count_if_r1": 2430,
-              "pooled_r": 0.9547325102880658
+              "pooled_r": 0.9547325102880658,
+              "sigma_l": 0.14320987654320988
             }
           ],
           "gate": "observe",
@@ -274,14 +294,16 @@
             "sigma_g": 0.4998,
             "pass_total": 5349,
             "expected_count_if_r1": 3823.4700000000003,
-            "pooled_r": 1.3989909689365942
+            "pooled_r": 1.3989909689365942,
+            "sigma_l": 0.6992156862745098
           },
           "clustered_cross": {
             "n_queries": 171,
             "sigma_g": 0.4998,
             "pass_total": 2193,
             "expected_count_if_r1": 4273.29,
-            "pooled_r": 0.513187731232844
+            "pooled_r": 0.513187731232844,
+            "sigma_l": 0.25649122807017544
           },
           "scattered_by_seed": [
             {
@@ -289,21 +311,24 @@
               "sigma_g": 0.4998,
               "pass_total": 8085,
               "expected_count_if_r1": 8096.76,
-              "pooled_r": 0.9985475671750181
+              "pooled_r": 0.9985475671750181,
+              "sigma_l": 0.49907407407407406
             },
             {
               "n_queries": 324,
               "sigma_g": 0.4998,
               "pass_total": 8100,
               "expected_count_if_r1": 8096.76,
-              "pooled_r": 1.0004001600640255
+              "pooled_r": 1.0004001600640255,
+              "sigma_l": 0.5
             },
             {
               "n_queries": 324,
               "sigma_g": 0.4998,
               "pass_total": 8144,
               "expected_count_if_r1": 8096.76,
-              "pooled_r": 1.0058344325384474
+              "pooled_r": 1.0058344325384474,
+              "sigma_l": 0.5027160493827161
             }
           ],
           "gate": "record",

@@ -32,7 +32,9 @@ func (d *DB) EnsureSchema(ctx context.Context) error {
 			id bigint PRIMARY KEY,
 			embedding vector(%d) NOT NULL,
 			label_clustered smallint NOT NULL,
-			label_scattered smallint NOT NULL
+			label_scattered_s1 smallint NOT NULL,
+			label_scattered_s2 smallint NOT NULL,
+			label_scattered_s3 smallint NOT NULL
 		)`, TableName, d.dims),
 	}
 	for _, s := range stmts {
@@ -47,13 +49,15 @@ func (d *DB) EnsureSchema(ctx context.Context) error {
 func (d *DB) LoadCorpus(ctx context.Context, records []corpus.Record) error {
 	_, err := d.conn.CopyFrom(ctx,
 		[]string{TableName},
-		[]string{"id", "embedding", "label_clustered", "label_scattered"},
+		[]string{"id", "embedding", "label_clustered",
+			"label_scattered_s1", "label_scattered_s2", "label_scattered_s3"},
 		pgx.CopyFromSlice(len(records), func(i int) ([]any, error) {
 			r := records[i]
 			if len(r.Embedding) != d.dims {
 				return nil, fmt.Errorf("db: record %d has %d dims, want %d", r.ID, len(r.Embedding), d.dims)
 			}
-			return []any{r.ID, pgvector.NewVector(r.Embedding), r.LabelClustered, r.LabelScattered}, nil
+			return []any{r.ID, pgvector.NewVector(r.Embedding), r.LabelClustered,
+				r.LabelScattered[0], r.LabelScattered[1], r.LabelScattered[2]}, nil
 		}),
 	)
 	if err != nil {
@@ -96,7 +100,10 @@ func (d *DB) BuildHNSW(ctx context.Context, opts IndexOpts) (BuildStats, error) 
 func (d *DB) BuildMetaIndexes(ctx context.Context) error {
 	stmts := []string{
 		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s (label_clustered)", ClusteredIndexName, TableName),
-		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s (label_scattered)", ScatteredIndexName, TableName),
+	}
+	for i, col := range ScatteredColumns {
+		stmts = append(stmts, fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s (%s)",
+			ScatteredIndexNames[i], TableName, col))
 	}
 	for _, s := range stmts {
 		if _, err := d.conn.Exec(ctx, s); err != nil {

@@ -386,7 +386,7 @@ func checkEndToEnd(ids []int64, vecs [][]float64, domains map[int64]string, rng 
 			f32[j] = float32(x)
 		}
 		recs[i] = corpus.Record{ID: id, Embedding: f32,
-			LabelClustered: domOrd[domains[id]], LabelScattered: 0}
+			LabelClustered: domOrd[domains[id]], LabelScattered: [3]int16{0, 0, 0}}
 	}
 
 	if err := d.EnsureSchema(ctx); err != nil {

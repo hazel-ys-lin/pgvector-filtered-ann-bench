@@ -127,6 +127,11 @@ type GLSStats struct {
 	PassTotal     int     `json:"pass_total"`
 	ExpectedCount float64 `json:"expected_count_if_r1"`
 	PooledR       float64 `json:"pooled_r"`
+	// SigmaL = PooledR × SigmaG = query 鄰域內的通過率(2026-07-19 author 指出,
+	// DECISIONS #23)。r 的上限是 1/σ_g,各檔位滿分不同故 raw r 不可比;σ_l 單調
+	// 可比,且直接是 post-filter 情境下 ANN 候選存活率的定量預言
+	// (期望存活數 = ef × σ_l),由建構端算出、由 bench 量測端驗證。
+	SigmaL float64 `json:"sigma_l"`
 }
 
 // PooledGLS:passCounts[i] = 第 i 條 query 的精確 top-k 中通過 filter 的筆數。
@@ -146,5 +151,6 @@ func PooledGLS(passCounts []int, k int, sigmaG float64) GLSStats {
 		PassTotal:     total,
 		ExpectedCount: expected,
 		PooledR:       r,
+		SigmaL:        r * sigmaG,
 	}
 }
