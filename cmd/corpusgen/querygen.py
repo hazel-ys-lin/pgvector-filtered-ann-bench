@@ -79,18 +79,42 @@ def domain_targets(proportions: dict, total: int) -> dict:
     return floors
 
 
-def stratified_sample(records: list, proportions: dict, n: int, seed: int) -> list:
+def stratified_sample(records: list, proportions: dict, n: int, seed: int,
+                      tiers: dict, tier_quota: int) -> list:
+    """比例抽樣 + 檔位富集側最低配額(#21 amendment)。
+
+    比例抽樣使危險區檔位(p07 富集側 per-seed 僅 ~1 條)欠統計功率;
+    對 p07–p50 各檔位,per-seed 源筆數不足 tier_quota 者從該檔位域超額
+    補抽,補抽筆標 quota_fill=True(聚合統計可按權重折算回自然分佈,
+    分層報表用原始分層)。background 非 filter 檔位,無配額。
+    回傳 (record, quota_fill) 對。"""
     by_domain = {}
     for r in records:
         by_domain.setdefault(r["domain"], []).append(r)
     rng = random.Random(seed)
     targets = domain_targets(proportions, n)
     out = []
+    chosen_by_tier = {}
+    strata = domain_to_stratum(tiers)
     for d, cnt in targets.items():
         pool = by_domain.get(d, [])
         if cnt > len(pool):
             sys.exit(f"stratum {d}: want {cnt}, pool {len(pool)}")
-        out.extend(rng.sample(pool, cnt))
+        picked = rng.sample(pool, cnt)
+        out.extend((r, False) for r in picked)
+        chosen_by_tier.setdefault(strata[d], []).extend(picked)
+    for tier, ds in tiers.items():
+        if tier == "background":
+            continue
+        have = chosen_by_tier.get(tier, [])
+        shortfall = tier_quota - len(have)
+        if shortfall <= 0:
+            continue
+        chosen_ids = {r["id"] for r in have}
+        pool = [r for d in ds for r in by_domain.get(d, []) if r["id"] not in chosen_ids]
+        if shortfall > len(pool):
+            sys.exit(f"tier {tier}: quota fill wants {shortfall}, pool {len(pool)}")
+        out.extend((r, True) for r in rng.sample(pool, shortfall))
     return out
 
 
@@ -104,6 +128,8 @@ def main():
     ap.add_argument("--model", default="gemini-3.5-flash")
     ap.add_argument("--per-seed", type=int, default=100)
     ap.add_argument("--seeds", type=int, nargs="+", default=[1, 2, 3])
+    ap.add_argument("--tier-quota-per-seed", type=int, default=6,
+                    help="各檔位富集側 per-seed 最低源筆數(3 seeds 合計 = ×3)")
     ap.add_argument("--batch-size", type=int, default=20)
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
@@ -127,7 +153,10 @@ def main():
     out_rows, leak_events, retry_fail = [], [], 0
     next_id = 1
     for seed in args.seeds:
-        sources = stratified_sample(records, cfg["proportions"], args.per_seed, seed)
+        sources = stratified_sample(records, cfg["proportions"], args.per_seed, seed,
+                                    cfg["tiers"], args.tier_quota_per_seed)
+        fill_flags = {r["id"]: fill for r, fill in sources}
+        sources = [r for r, _ in sources]
         for i in range(0, len(sources), args.batch_size):
             batch = sources[i:i + args.batch_size]
             numbered = "\n".join(f"{j+1}. {r['text']}" for j, r in enumerate(batch))
@@ -151,7 +180,8 @@ def main():
                 if not q or leaked(q, taxonomy):
                     continue  # 重生 3 次仍洩漏或缺漏:丟棄(計數在 retry_fail/missing)
                 out_rows.append({"id": next_id, "text": q, "qseed": seed,
-                                 "source_id": r["id"], "stratum": strata[r["domain"]]})
+                                 "source_id": r["id"], "stratum": strata[r["domain"]],
+                                 "quota_fill": fill_flags[r["id"]]})
                 next_id += 1
             print(f"[seed {seed}] {len(out_rows)} queries accumulated")
 
@@ -227,9 +257,15 @@ def selftest():
     assert strata["wildlife"] == "p50" and strata["religious ceremonies"] == "background"
     recs = [{"id": i, "domain": "wildlife" if i % 2 else "sports events", "text": "t"}
             for i in range(100)]
-    s = stratified_sample(recs, {"wildlife": 0.5, "sports events": 0.5}, 10, 7)
-    assert len(s) == 10
-    assert stratified_sample(recs, {"wildlife": 0.5, "sports events": 0.5}, 10, 7) == s
+    props = {"wildlife": 0.5, "sports events": 0.5}
+    s = stratified_sample(recs, props, 10, 7, tiers, 5)
+    assert len(s) == 10  # 各檔位比例額已 ≥ 配額,無補抽
+    assert stratified_sample(recs, props, 10, 7, tiers, 5) == s
+    # 配額觸發:p50 比例額 10 < 12 → 補 2,標 quota_fill
+    s2 = stratified_sample(recs, props, 10, 7, tiers, 12)
+    assert len(s2) == 12
+    assert sum(1 for _, fill in s2 if fill) == 2
+    assert len({r["id"] for r, _ in s2}) == 12, "no duplicate sources"
     print("selftest OK")
     return 0
 
