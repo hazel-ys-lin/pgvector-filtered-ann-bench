@@ -64,6 +64,7 @@ func main() {
 	queriesPath := flag.String("queries", "", "queries JSONL;給定即跑檢查 7(GLS)")
 	queryVecPath := flag.String("query-vectors", "", "query 向量 JSONL(檢查 7)")
 	filtersConfig := flag.String("filters-config", "configs/domains_v1.toml", "檔位映射(檢查 7)")
+	parity := flag.Bool("nn-parity", false, "跑分塊 vs 樸素 NN 對拍(#22;100k 前於 5k 執行)")
 	flag.Parse()
 
 	ids, vecs, err := loadVectors(*vecPath)
@@ -95,8 +96,12 @@ func main() {
 		Pass:      corpStdMean >= 0.7*refStdMean}
 	checks = append(checks, c2)
 
-	// 全語料最近鄰距離(檢查 3/5 共用;brute force,goroutine 平行)
-	nn := nearestNeighborDist(vecs)
+	// 全語料最近鄰距離(檢查 3 用;分塊精確 #22,float32 量化與 #21 裁判一致)
+	cv32 := quantize(vecs)
+	nn := nnBlocked32(cv32)
+	if *parity {
+		must(nnParity(nn, nnNaive32(cv32), *nearDup))
+	}
 
 	// 檢查 3:近重複率 1–3%(初始閾值,校準候選)
 	dupCount := 0
@@ -254,10 +259,61 @@ func pairStats(vecs [][]float64, n int, rng *rand.Rand) (median, stdMean float64
 	return median, std / mean
 }
 
-// nearestNeighborDist 全對暴力,行分片平行。
-func nearestNeighborDist(vecs [][]float64) []float64 {
+// nnNaive32:樸素逐行全對(對拍基準)。float32 輸入 + float64 累加,
+// 與分塊版唯一差異 = 求和順序(#22:尾數位差合法)。
+func nnNaive32(vecs [][]float32) []float64 {
 	n := len(vecs)
 	nn := make([]float64, n)
+	parallelRows(n, func(i int) {
+		best := math.Inf(1)
+		for j := 0; j < n; j++ {
+			if i == j {
+				continue
+			}
+			var dot float64
+			for x := range vecs[i] {
+				dot += float64(vecs[i][x]) * float64(vecs[j][x])
+			}
+			if d := 1 - dot; d < best {
+				best = d
+			}
+		}
+		nn[i] = best
+	})
+	return nn
+}
+
+// nnBlocked32:分塊精確(DECISIONS #22,100k 用)。j 向量按塊掃提高
+// cache 局部性;精確計算,不引入任何近似——守門不可近似(效度論證見 #22)。
+func nnBlocked32(vecs [][]float32) []float64 {
+	n := len(vecs)
+	const blk = 512
+	nn := make([]float64, n)
+	parallelRows(n, func(i int) {
+		best := math.Inf(1)
+		vi := vecs[i]
+		for jb := 0; jb < n; jb += blk {
+			jend := min(jb+blk, n)
+			for j := jb; j < jend; j++ {
+				if i == j {
+					continue
+				}
+				vj := vecs[j]
+				var dot float64
+				for x := range vi {
+					dot += float64(vi[x]) * float64(vj[x])
+				}
+				if d := 1 - dot; d < best {
+					best = d
+				}
+			}
+		}
+		nn[i] = best
+	})
+	return nn
+}
+
+func parallelRows(n int, f func(i int)) {
 	var wg sync.WaitGroup
 	workers := runtime.NumCPU()
 	chunk := (n + workers - 1) / workers
@@ -270,21 +326,30 @@ func nearestNeighborDist(vecs [][]float64) []float64 {
 		go func(lo, hi int) {
 			defer wg.Done()
 			for i := lo; i < hi; i++ {
-				best := math.Inf(1)
-				for j := 0; j < n; j++ {
-					if i == j {
-						continue
-					}
-					if d := dist(vecs[i], vecs[j]); d < best {
-						best = d
-					}
-				}
-				nn[i] = best
+				f(i)
 			}
 		}(lo, hi)
 	}
 	wg.Wait()
-	return nn
+}
+
+// nnParity:#22 對拍——NN 距離逐點差 < 1e-6 且近重複集合(0.05 閾值)相同。
+func nnParity(blocked, naive []float64, thresh float64) error {
+	worst := 0.0
+	for i := range blocked {
+		d := math.Abs(blocked[i] - naive[i])
+		if d > worst {
+			worst = d
+		}
+		if (blocked[i] < thresh) != (naive[i] < thresh) {
+			return fmt.Errorf("nn parity: near-dup set differs at index %d (blocked %g vs naive %g)", i, blocked[i], naive[i])
+		}
+	}
+	if worst >= 1e-6 {
+		return fmt.Errorf("nn parity: worst |Δ| = %g ≥ 1e-6", worst)
+	}
+	fmt.Printf("nn parity OK: worst |Δ| = %.2e, near-dup sets identical\n", worst)
+	return nil
 }
 
 func intraCrossRatio(vecs [][]float64, ids []int64, domains map[int64]string, n int, rng *rand.Rand) float64 {

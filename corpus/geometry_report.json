@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T03:07:16Z",
+  "generated_at": "2026-07-19T03:22:27Z",
   "corpus_file": "corpus/corpus_5k.jsonl",
   "vectors_file": "corpus/vectors_5k.jsonl",
   "ref_file": "corpus/coco_ref_1k_vec.jsonl",
@@ -37,7 +37,7 @@
     {
       "check": 4,
       "name": "intra/cross domain distance ratio",
-      "value": 0.8419,
+      "value": 0.8403,
       "criterion": "0.6–0.9(沿用初始值,模型/域粒度敏感,可校準)",
       "pass": true
     },
