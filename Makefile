@@ -32,6 +32,12 @@ corpus-pilot:
 corpusgen-selftest:
 	uv run cmd/corpusgen/corpusgen.py --selftest
 
+# 順序 5:30k 分段生成(#27/#28:thinking=0 + batch 50,可續跑)
+corpus-30k:
+	uv run cmd/corpusgen/corpusgen.py --total 30000 --batch-size 50 --thinking-budget 0 \
+		--config configs/domains_v1.toml \
+		--out corpus/corpus_5k.jsonl --report corpus/gen_report_30k.json
+
 # 順序 3:5k 語料 embed(#16 task_type=document;#17 manifest 自動出)
 embed-5k:
 	go run ./cmd/embed --in corpus/corpus_5k.jsonl --out corpus/vectors_5k.jsonl \

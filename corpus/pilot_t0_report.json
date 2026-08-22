@@ -1,0 +1,152 @@
+{
+  "config": "configs/domains_v1.toml",
+  "model": "gemini-3.5-flash",
+  "seed": 42,
+  "targets": {
+    "studio photography": 21,
+    "esports & board games": 90,
+    "dance rehearsals": 90,
+    "festival parades": 90,
+    "weddings": 90,
+    "graduation ceremonies": 90,
+    "street markets": 90,
+    "coffee & desserts": 90,
+    "museum exhibitions": 90,
+    "sports events": 100,
+    "music performances": 100,
+    "hiking & mountaineering": 100,
+    "beach activities": 100,
+    "cooking & cuisine": 100,
+    "animals & pets": 100,
+    "wildlife": 100,
+    "city streetscapes": 100,
+    "architecture & landmarks": 100,
+    "transportation": 100,
+    "gardening & plants": 100,
+    "work scenes": 100,
+    "medical scenes": 100,
+    "classrooms & courses": 100,
+    "children's play": 100,
+    "religious ceremonies": 127,
+    "agriculture & fishing": 127,
+    "construction & manufacturing": 127,
+    "tech expos": 126,
+    "camping & picnics": 126,
+    "volunteering & charity": 126
+  },
+  "counts": {
+    "religious ceremonies": 50,
+    "agriculture & fishing": 50,
+    "construction & manufacturing": 50,
+    "camping & picnics": 50,
+    "volunteering & charity": 50,
+    "tech expos": 50,
+    "children's play": 50,
+    "music performances": 50,
+    "hiking & mountaineering": 50,
+    "classrooms & courses": 50
+  },
+  "thinking_budget": 0,
+  "batch_size": 50,
+  "token_usage": {
+    "input": 1949,
+    "output": 57027,
+    "thinking": 0,
+    "batches": 10
+  },
+  "records_total": 500,
+  "cross_batch_dup_rate": 0.0,
+  "cross_batch_dup_alarm": false,
+  "name_collapse": {
+    "repeated_names_top20": {
+      "Jewish": 7,
+      "Buddhist": 3,
+      "Hindu": 3,
+      "Shinto": 3,
+      "Catholic": 3,
+      "Eastern Orthodox": 3
+    },
+    "records_with_name_fraction": 0.178
+  },
+  "per_domain_text_dup_rate": {
+    "religious ceremonies": 0.0,
+    "agriculture & fishing": 0.0,
+    "construction & manufacturing": 0.0,
+    "camping & picnics": 0.0,
+    "volunteering & charity": 0.0,
+    "tech expos": 0.0,
+    "children's play": 0.0,
+    "music performances": 0.0,
+    "hiking & mountaineering": 0.0,
+    "classrooms & courses": 0.0
+  },
+  "roster_species_mismatch": 0,
+  "watchlist": {
+    "religious ceremonies": {
+      "text_dup_rate": 0.0,
+      "note": "B.3 檢查 5 預先觀察名單(文字層預警;正式判定在 embedding 空間)"
+    }
+  },
+  "batch_discard_curve": [
+    [
+      1,
+      "religious ceremonies",
+      0,
+      0
+    ],
+    [
+      2,
+      "agriculture & fishing",
+      0,
+      0
+    ],
+    [
+      3,
+      "construction & manufacturing",
+      0,
+      0
+    ],
+    [
+      4,
+      "camping & picnics",
+      0,
+      0
+    ],
+    [
+      5,
+      "volunteering & charity",
+      0,
+      0
+    ],
+    [
+      6,
+      "tech expos",
+      0,
+      0
+    ],
+    [
+      7,
+      "children's play",
+      0,
+      0
+    ],
+    [
+      8,
+      "music performances",
+      0,
+      0
+    ],
+    [
+      9,
+      "hiking & mountaineering",
+      0,
+      0
+    ],
+    [
+      10,
+      "classrooms & courses",
+      0,
+      0
+    ]
+  ]
+}

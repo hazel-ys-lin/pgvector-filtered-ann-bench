@@ -304,6 +304,8 @@ def main():
     ap.add_argument("--batch-size", type=int, default=30)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--max-batches", type=int, default=0, help="0 = 不限,>0 供小額試跑")
+    ap.add_argument("--thinking-budget", type=int, default=-1,
+                    help="-1 = 模型預設;0 = 關 thinking(thinking token 按 output 計價,成本大頭)")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
 
@@ -348,6 +350,7 @@ def main():
     targets = domain_targets(proportions, args.total)
     next_id = max_id + 1
     batch_no = 0
+    tok_in = tok_out = tok_think = 0  # usage_metadata 累計(成本實測儀表)
     write_prompts_md(pathlib.Path(args.prompts_md), args.model, args, hints, rosters)
 
     with out_path.open("a") as out:
@@ -360,6 +363,10 @@ def main():
             n = min(args.batch_size, targets[domain] - counts[domain])
             batch_no += 1
             temp = rng.uniform(0.9, 1.1)
+            gen_cfg = dict(system_instruction=SYSTEM_PROMPT, temperature=temp)
+            if args.thinking_budget >= 0:
+                gen_cfg["thinking_config"] = types.ThinkingConfig(
+                    thinking_budget=args.thinking_budget)
             try:
                 user_prompt = USER_TEMPLATE.format(domain=domain, n=n)
                 if domain in hints:
@@ -372,8 +379,7 @@ def main():
                 resp = client.models.generate_content(
                     model=args.model,
                     contents=user_prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction=SYSTEM_PROMPT, temperature=temp),
+                    config=types.GenerateContentConfig(**gen_cfg),
                 )
             except Exception as e:  # 配額/暫時性錯誤
                 msg = str(e)
@@ -391,6 +397,16 @@ def main():
                       file=sys.stderr)
                 time.sleep(wait)
                 continue
+
+            um = getattr(resp, "usage_metadata", None)
+            b_in = b_out = b_think = 0
+            if um:
+                b_in = um.prompt_token_count or 0
+                b_out = um.candidates_token_count or 0
+                b_think = getattr(um, "thoughts_token_count", None) or 0
+                tok_in += b_in
+                tok_out += b_out
+                tok_think += b_think
 
             records, fmt_rejects = parse_batch(resp.text or "", domain)
             in_batch_discard = 0
@@ -420,7 +436,8 @@ def main():
             done = sum(counts.values())
             print(f"[batch {batch_no}] {domain}: +{len(batch_grams)} "
                   f"(dup-discard {in_batch_discard}, fmt-reject {fmt_rejects}) "
-                  f"total {done}/{args.total}")
+                  f"tok in/out/think={b_in}/{b_out}/{b_think} "
+                  f"total {done}/{args.total}", flush=True)
 
     report = {
         "config": args.config,
@@ -428,6 +445,10 @@ def main():
         "seed": args.seed,
         "targets": targets,
         "counts": dict(counts),
+        "thinking_budget": args.thinking_budget,
+        "batch_size": args.batch_size,
+        "token_usage": {"input": tok_in, "output": tok_out, "thinking": tok_think,
+                        "batches": batch_no},
         **monitors.report(watchlist=["religious ceremonies"]),
     }
     pathlib.Path(args.report).write_text(

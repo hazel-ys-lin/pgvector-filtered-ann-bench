@@ -44,6 +44,6 @@ configs/domains_v1.toml。
 
 ```
 {
-  "wildlife": "197 subjects, per-record rotation"
+  "wildlife": "332 subjects, per-record rotation"
 }
 ```
