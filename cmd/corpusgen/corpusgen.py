@@ -90,6 +90,18 @@ def jaccard(a: set, b: set) -> float:
 
 TITLE_WORDS = {"Dr", "Mr", "Mrs", "Ms", "St", "Prof", "Fr", "Rev"}
 
+# 國籍/語言/文化形容詞:大寫但非專有名(30k 監控實測 "French" 78 次誤報)
+NATIONALITY_WORDS = {
+    "French", "English", "American", "Italian", "Japanese", "Chinese",
+    "Spanish", "German", "Mexican", "Indian", "Thai", "Korean", "Greek",
+    "Turkish", "Vietnamese", "Moroccan", "Peruvian", "Brazilian",
+    "Ethiopian", "Egyptian", "Persian", "Russian", "Polish", "Dutch",
+    "Swiss", "Austrian", "Belgian", "Portuguese", "Argentine", "Cuban",
+    "Hawaiian", "Tibetan", "Balinese", "Javanese", "Mongolian", "Nordic",
+    "Scandinavian", "Mediterranean", "European", "Asian", "African",
+    "Victorian", "Georgian", "Gothic", "Baroque", "Romanesque",
+}
+
 
 def extract_names(text: str) -> set:
     """粗抽專有名:非句首的大寫詞串。啟發式監控用,非 NER。
@@ -113,9 +125,10 @@ def extract_names(text: str) -> set:
                         j += 1
                     else:
                         break
-                # 丟棄:單獨稱謂、純大寫縮寫、稱謂開頭但只剩稱謂的串
+                # 丟棄:單獨稱謂、純大寫縮寫、國籍/風格形容詞、
+                # 以及整串皆為上述雜訊的組合
                 run = [w for w in run if not (w.isupper() and len(w) <= 4)]
-                if run and not all(w in TITLE_WORDS for w in run):
+                if run and not all(w in TITLE_WORDS or w in NATIONALITY_WORDS for w in run):
                     names.add(" ".join(run))
                 i = j
             else:
@@ -473,6 +486,9 @@ def selftest():
     noise = extract_names("A worker installs LED panels while Dr. Chen and St. Mary volunteers watch.")
     assert "LED" not in noise and "Dr" not in noise and "St" not in noise
     assert any("Chen" in n for n in noise)  # 稱謂後的真名保留
+    nat = extract_names("A baker arranges French pastries near a Victorian storefront with Maya Chen.")
+    assert "French" not in nat and "Victorian" not in nat  # 國籍/風格形容詞誤報濾除
+    assert "Maya Chen" in nat
 
     t = domain_targets({"a": 0.5, "b": 0.3, "c": 0.2}, 10)
     assert sum(t.values()) == 10 and t["a"] == 5
