@@ -2,7 +2,7 @@
 
 - 生成模型(DECISIONS #13,首批釘定):`gemini-3.5-flash`
 - temperature:每批於 [0.9, 1.1] 均勻抽樣(B.2)
-- 批大小:30(B.2:20–40)
+- 批大小:50(B.2:20–40)
 - 同批去重:3-gram Jaccard > 0.6 丟棄重生
 - 跨批監控:抽樣 200 筆比對,重複率 > 2% 告警
 - 域配比:configs/domains_v1.toml(DECISIONS #15)

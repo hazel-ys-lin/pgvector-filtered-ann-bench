@@ -178,7 +178,9 @@ func embedBatch(client *http.Client, key, taskType string, dims int, texts []str
 		}
 		msg := string(rb)
 		// 不可重試型(corpusgen 同款分類):日配額 / prepay credits
-		if resp.StatusCode == 429 && (strings.Contains(msg, "PerDay") || strings.Contains(msg, "credits are depleted")) {
+		if resp.StatusCode == 429 && (strings.Contains(msg, "PerDay") ||
+			strings.Contains(msg, "credits are depleted") ||
+			strings.Contains(msg, "spending cap")) {
 			return nil, fmt.Errorf("quota/credits exhausted (resume-safe): %.200s", msg)
 		}
 		lastErr = fmt.Errorf("HTTP %d: %.200s", resp.StatusCode, msg)
