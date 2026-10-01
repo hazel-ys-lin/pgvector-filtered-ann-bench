@@ -1,0 +1,344 @@
+{
+  "generated_at": "2026-08-23T13:44:21Z",
+  "corpus_file": "corpus/corpus_30k.jsonl",
+  "vectors_file": "corpus/vectors_30k.jsonl",
+  "ref_file": "corpus/coco_ref_1k_vec.jsonl",
+  "seed": 42,
+  "pair_sample": 5000,
+  "checks": [
+    {
+      "check": 1,
+      "name": "pairwise distance median",
+      "value": {
+        "corpus": 0.2917,
+        "ref": 0.2931
+      },
+      "criterion": "corpus median within ref ±0.05",
+      "pass": true
+    },
+    {
+      "check": 2,
+      "name": "distance concentration (std/mean)",
+      "value": {
+        "corpus": 0.1235,
+        "ref": 0.1289
+      },
+      "criterion": "corpus std/mean \u003e= 0.7 × ref",
+      "pass": true
+    },
+    {
+      "check": 3,
+      "name": "near-duplicate rate (NN dist \u003c 0.05)",
+      "value": 0.0599,
+      "criterion": "\u003c= 3%(2026-07-18 校準撤下限,DECISIONS #20)",
+      "pass": false,
+      "note": "機制單側:失敗模式僅在過高側(ties 崩 recall)。實測語料 0.76% vs COCO 參照 4.50%——語料 tie 密度低於真實 caption,README limitations 揭露"
+    },
+    {
+      "check": 4,
+      "name": "intra/cross domain distance ratio",
+      "value": 0.8332,
+      "criterion": "0.6–0.9(沿用初始值,模型/域粒度敏感,可校準)",
+      "pass": true
+    },
+    {
+      "check": 5,
+      "name": "per-domain near-duplicate rate",
+      "value": {
+        "per_domain": {
+          "agriculture \u0026 fishing": 0.0435,
+          "animals \u0026 pets": 0.056,
+          "architecture \u0026 landmarks": 0.063,
+          "beach activities": 0.048,
+          "camping \u0026 picnics": 0.0292,
+          "children's play": 0.05,
+          "city streetscapes": 0.019,
+          "classrooms \u0026 courses": 0.124,
+          "coffee \u0026 desserts": 0.0411,
+          "construction \u0026 manufacturing": 0.0735,
+          "cooking \u0026 cuisine": 0.067,
+          "dance rehearsals": 0.0456,
+          "esports \u0026 board games": 0.0311,
+          "festival parades": 0.0278,
+          "gardening \u0026 plants": 0.049,
+          "graduation ceremonies": 0.0222,
+          "hiking \u0026 mountaineering": 0.022,
+          "medical scenes": 0.097,
+          "museum exhibitions": 0.0233,
+          "music performances": 0.034,
+          "religious ceremonies": 0.0972,
+          "sports events": 0.087,
+          "street markets": 0.0222,
+          "studio photography": 0,
+          "tech expos": 0.0095,
+          "transportation": 0.054,
+          "volunteering \u0026 charity": 0.0348,
+          "weddings": 0.0233,
+          "wildlife": 0.218,
+          "work scenes": 0.14
+        },
+        "worst_domain": "wildlife",
+        "worst_rate": 0.218
+      },
+      "criterion": "every domain \u003c 5%",
+      "pass": false
+    },
+    {
+      "check": 6,
+      "name": "end-to-end recall (no-filter, ef=200, k=50)",
+      "value": 1,
+      "criterion": "\u003e= 0.99, plan asserted hnsw_index",
+      "pass": true
+    },
+    {
+      "check": 7,
+      "name": "GLS construction validation",
+      "value": [
+        {
+          "tier": "p07",
+          "sigma_g": 0.007,
+          "clustered_enriched": {
+            "n_queries": 18,
+            "sigma_g": 0.007,
+            "pass_total": 100,
+            "expected_count_if_r1": 6.3,
+            "pooled_r": 15.873015873015873,
+            "sigma_l": 0.11111111111111112
+          },
+          "clustered_cross": {
+            "n_queries": 306,
+            "sigma_g": 0.007,
+            "pass_total": 48,
+            "expected_count_if_r1": 107.10000000000001,
+            "pooled_r": 0.44817927170868344,
+            "sigma_l": 0.003137254901960784
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.007,
+              "pass_total": 139,
+              "expected_count_if_r1": 113.4,
+              "pooled_r": 1.2257495590828924,
+              "sigma_l": 0.008580246913580248
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.007,
+              "pass_total": 118,
+              "expected_count_if_r1": 113.4,
+              "pooled_r": 1.0405643738977073,
+              "sigma_l": 0.007283950617283951
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.007,
+              "pass_total": 115,
+              "expected_count_if_r1": 113.4,
+              "pooled_r": 1.0141093474426808,
+              "sigma_l": 0.0070987654320987656
+            }
+          ],
+          "gate": "hard+scattered_FAIL",
+          "pass": false
+        },
+        {
+          "tier": "p3",
+          "sigma_g": 0.03,
+          "clustered_enriched": {
+            "n_queries": 18,
+            "sigma_g": 0.03,
+            "pass_total": 582,
+            "expected_count_if_r1": 27,
+            "pooled_r": 21.555555555555557,
+            "sigma_l": 0.6466666666666667
+          },
+          "clustered_cross": {
+            "n_queries": 306,
+            "sigma_g": 0.03,
+            "pass_total": 193,
+            "expected_count_if_r1": 459,
+            "pooled_r": 0.420479302832244,
+            "sigma_l": 0.01261437908496732
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.03,
+              "pass_total": 446,
+              "expected_count_if_r1": 486,
+              "pooled_r": 0.9176954732510288,
+              "sigma_l": 0.027530864197530865
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.03,
+              "pass_total": 475,
+              "expected_count_if_r1": 486,
+              "pooled_r": 0.977366255144033,
+              "sigma_l": 0.02932098765432099
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.03,
+              "pass_total": 475,
+              "expected_count_if_r1": 486,
+              "pooled_r": 0.977366255144033,
+              "sigma_l": 0.02932098765432099
+            }
+          ],
+          "gate": "hard",
+          "pass": true
+        },
+        {
+          "tier": "p6",
+          "sigma_g": 0.06,
+          "clustered_enriched": {
+            "n_queries": 18,
+            "sigma_g": 0.06,
+            "pass_total": 692,
+            "expected_count_if_r1": 54,
+            "pooled_r": 12.814814814814815,
+            "sigma_l": 0.7688888888888888
+          },
+          "clustered_cross": {
+            "n_queries": 306,
+            "sigma_g": 0.06,
+            "pass_total": 369,
+            "expected_count_if_r1": 918,
+            "pooled_r": 0.4019607843137255,
+            "sigma_l": 0.02411764705882353
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.06,
+              "pass_total": 905,
+              "expected_count_if_r1": 972,
+              "pooled_r": 0.9310699588477366,
+              "sigma_l": 0.05586419753086419
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.06,
+              "pass_total": 1021,
+              "expected_count_if_r1": 972,
+              "pooled_r": 1.050411522633745,
+              "sigma_l": 0.06302469135802469
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.06,
+              "pass_total": 1019,
+              "expected_count_if_r1": 972,
+              "pooled_r": 1.0483539094650205,
+              "sigma_l": 0.06290123456790123
+            }
+          ],
+          "gate": "hard",
+          "pass": true
+        },
+        {
+          "tier": "p15",
+          "sigma_g": 0.15,
+          "clustered_enriched": {
+            "n_queries": 45,
+            "sigma_g": 0.15,
+            "pass_total": 1579,
+            "expected_count_if_r1": 337.5,
+            "pooled_r": 4.678518518518518,
+            "sigma_l": 0.7017777777777777
+          },
+          "clustered_cross": {
+            "n_queries": 279,
+            "sigma_g": 0.15,
+            "pass_total": 787,
+            "expected_count_if_r1": 2092.5,
+            "pooled_r": 0.37610513739546,
+            "sigma_l": 0.056415770609318995
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.15,
+              "pass_total": 2558,
+              "expected_count_if_r1": 2430,
+              "pooled_r": 1.0526748971193416,
+              "sigma_l": 0.15790123456790123
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.15,
+              "pass_total": 2493,
+              "expected_count_if_r1": 2430,
+              "pooled_r": 1.025925925925926,
+              "sigma_l": 0.15388888888888888
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.15,
+              "pass_total": 2458,
+              "expected_count_if_r1": 2430,
+              "pooled_r": 1.011522633744856,
+              "sigma_l": 0.1517283950617284
+            }
+          ],
+          "gate": "observe",
+          "pass": true
+        },
+        {
+          "tier": "p50",
+          "sigma_g": 0.5,
+          "clustered_enriched": {
+            "n_queries": 153,
+            "sigma_g": 0.5,
+            "pass_total": 5679,
+            "expected_count_if_r1": 3825,
+            "pooled_r": 1.484705882352941,
+            "sigma_l": 0.7423529411764705
+          },
+          "clustered_cross": {
+            "n_queries": 171,
+            "sigma_g": 0.5,
+            "pass_total": 1857,
+            "expected_count_if_r1": 4275,
+            "pooled_r": 0.4343859649122807,
+            "sigma_l": 0.21719298245614035
+          },
+          "scattered_by_seed": [
+            {
+              "n_queries": 324,
+              "sigma_g": 0.5,
+              "pass_total": 8068,
+              "expected_count_if_r1": 8100,
+              "pooled_r": 0.9960493827160494,
+              "sigma_l": 0.4980246913580247
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.5,
+              "pass_total": 8092,
+              "expected_count_if_r1": 8100,
+              "pooled_r": 0.9990123456790123,
+              "sigma_l": 0.49950617283950616
+            },
+            {
+              "n_queries": 324,
+              "sigma_g": 0.5,
+              "pass_total": 8070,
+              "expected_count_if_r1": 8100,
+              "pooled_r": 0.9962962962962963,
+              "sigma_l": 0.4981481481481482
+            }
+          ],
+          "gate": "record",
+          "pass": true
+        }
+      ],
+      "criterion": "clustered enriched pooled r \u003e= 2 (p07/p3/p6 hard; p15 observe; p50 record); scattered all tiers r in [0.85, 1.15]",
+      "pass": false,
+      "note": "σ_l 出自 float32 量化的無 filter 精確 top-50;scattered 偏離 = 指派程式 bug 訊號"
+    }
+  ],
+  "all_pass": false
+}

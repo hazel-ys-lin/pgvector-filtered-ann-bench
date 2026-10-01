@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-23T10:15:16Z",
+  "source_file": "corpus/corpus_30k.jsonl",
+  "source_sha256": "4339e555c886880644b1dbfe77568344688aa74c6dae65ccef0ee8dc807e8b3d",
+  "records": 30000,
+  "model": "gemini-embedding-001",
+  "task_type": "RETRIEVAL_DOCUMENT",
+  "output_dimensionality": 768,
+  "normalized": true,
+  "pre_norm_min": 0.5781922136556535,
+  "pre_norm_max": 0.5952430387696187,
+  "pre_norm_mean": 0.5875691945184872,
+  "git_commit": "1734942b06183891ec181a0897d31b22a9ae70a2"
+}
