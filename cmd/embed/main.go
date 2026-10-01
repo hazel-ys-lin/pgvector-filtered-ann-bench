@@ -248,6 +248,17 @@ func main() {
 	if err != nil {
 		fatal(err)
 	}
+
+	// Resume 安全檢查:id 不是內容位址。query 集每次重抽 id 都從 1 起算,
+	// 若 --out 是舊檔(來自不同 --in),id 重疊但文字已變,純看 id 續跑
+	// 會靜默吃進錯的舊向量(2026-10-01 實測踩到)。manifest 存了上次
+	// --in 的 sha256,比對不符即拒絕續跑,逼使用者換路徑或先刪舊檔。
+	if *limit == 0 {
+		if err := checkResumeSafety(*manifestPath, *in); err != nil {
+			fatal(err)
+		}
+	}
+
 	done, err := readDoneIDs(*out)
 	if err != nil {
 		fatal(err)
@@ -374,6 +385,31 @@ func readTexts(path string, limit int) ([]textRecord, error) {
 		}
 	}
 	return out, sc.Err()
+}
+
+// checkResumeSafety 比對既有 manifest 記錄的來源檔 sha 與目前 --in 是否一致。
+// 不一致代表 --out 是另一份語料的殘留輸出,id 重疊不代表內容相同,
+// 續跑會靜默混進錯的向量。無既有 manifest(全新輸出)視為安全,放行。
+func checkResumeSafety(manifestPath, inPath string) error {
+	mb, err := os.ReadFile(manifestPath)
+	if err != nil {
+		return nil // 無舊 manifest,全新輸出,安全
+	}
+	var old manifest
+	if err := json.Unmarshal(mb, &old); err != nil || old.SourceFile == "" {
+		return nil // 讀不出舊 manifest 內容,視同無(不因壞檔卡死正常流程)
+	}
+	curSHA, err := fileSHA256(inPath)
+	if err != nil {
+		return nil // --in 讀不到,交給後續流程報更明確的錯
+	}
+	if old.SourceSHA256 != curSHA {
+		return fmt.Errorf(
+			"%s 的 manifest 記錄 source=%s(sha %s),但 --in 現在是 %s(sha %s)。"+
+				"id 不保證對得上內容,不安全續跑。刪除輸出與此 manifest 後重跑,或換 --out 路徑",
+			manifestPath, old.SourceFile, old.SourceSHA256[:12], inPath, curSHA[:12])
+	}
+	return nil
 }
 
 func readDoneIDs(path string) (map[int64]bool, error) {
