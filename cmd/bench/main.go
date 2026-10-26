@@ -101,6 +101,7 @@ func main() {
 	k := flag.Int("k", 50, "")
 	skipLoad := flag.Bool("skip-load", false, "跳過灌庫/建索引(表已就緒時)")
 	sets := flag.String("sets", "matrix,fourway", "跑哪些配置集")
+	fourwayTiers := flag.String("fourway-tiers", "p3,p6", "四方對照檔位(A.5b:預期 p3/p6,實跑後微調)")
 	flag.Parse()
 
 	ctx := context.Background()
@@ -160,7 +161,7 @@ func main() {
 		configs = append(configs, matrixConfigs(*k)...)
 	}
 	if strings.Contains(*sets, "fourway") {
-		configs = append(configs, fourwayConfigs(*k)...)
+		configs = append(configs, fourwayConfigs(*k, strings.Split(*fourwayTiers, ","))...)
 	}
 	fmt.Printf("%d configs × %d queries\n", len(configs), len(queryIDs))
 
@@ -322,7 +323,7 @@ func matrixConfigs(k int) []benchConfig {
 }
 
 // fourwayConfigs:A.5b 危險區四方——tier {p3, p6},處置 (a)(b)(c)(d200)(d400)。
-func fourwayConfigs(k int) []benchConfig {
+func fourwayConfigs(k int, tiers []string) []benchConfig {
 	treatments := []config.SweepConfig{
 		{EfSearch: 40, IterativeScan: "off", PlanMode: "auto", K: k},           // (a)
 		{EfSearch: 40, IterativeScan: "off", PlanMode: "force_exact", K: k},    // (b)
@@ -331,7 +332,7 @@ func fourwayConfigs(k int) []benchConfig {
 		{EfSearch: 400, IterativeScan: "off", PlanMode: "auto", K: k},          // (d')
 	}
 	var out []benchConfig
-	for _, tier := range []string{"p3", "p6"} {
+	for _, tier := range tiers {
 		for _, cfg := range treatments {
 			out = append(out, benchConfig{"fourway", specFor("clustered", 0, tier), cfg})
 			for _, s := range []int{1, 2, 3} {
