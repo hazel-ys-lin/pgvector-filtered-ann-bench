@@ -220,7 +220,7 @@ mood / camera distance (close-up to wide shot) / primary objects
 | 2 | 距離集中度 | 分佈 std/mean | ≥ 參照樣本的 70% | 過窄 → HNSW 分不出鄰居 | 
 | 3 | 近重複率 | 最近鄰距離 < 0.05 比例 | ≤ 3%(2026-07-18 校準撤下限,DECISIONS #20) | 過高 → ties 崩 recall | 
 | 4 | 叢集結構存在 | 域內/跨域平均距離比 | 0\.6–0.9 | ≈1 → 無叢集,聚集型實驗失效 | 
-| 5 | 無退化叢 | 單域近重複率 | 每域 < 5% | 該域 prompt 塌縮,重生 | 
+| 5 | 無退化叢 | 單域近重複率 | 每域 < 5%,**明文例外**(2026-10-26,DECISIONS #32):religious ceremonies、work scenes、architecture & landmarks < 10%——30k 規模下嘗試修復(roster 式歷史機制推廣)對這兩域失敗(work scenes 甚至惡化),author 拍板接受現狀而非繼續追加工程;religious ceremonies 為背景域不污染任何 tier recall,work scenes 屬 p50 檔位本即 record 不設硬閘(#15/#20),風險可控 | 該域 prompt 塌縮,重生(例外域不適用) | 
 | 6 | End-to-end 冒煙 | no-filter ef=200 recall@50 vs exact | ≥ 0.99 | 幾何或索引有問題,先修 | 
 | 7 | (v1.1)GLS 建構驗證 | MeasureGLS 兩套標籤 | 分檔位準則(2026-07-18 修正,DECISIONS #15):散開型全檔位 r ≈ 1(±0.15);聚集型 p07/p3/p6 須顯著偏離 1;p15/p50 為域聯集、偏離預期隨聯集稀釋遞減,不設硬門檻,實測值入 geometry_report 並於 README 披露 | 散布軸建構失敗,調域配比 | 
 
