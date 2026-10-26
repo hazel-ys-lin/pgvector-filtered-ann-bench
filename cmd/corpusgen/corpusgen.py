@@ -326,6 +326,8 @@ def write_prompts_md(path: pathlib.Path, model: str, args, hints: dict, rosters:
 - 生成模型(DECISIONS #13,首批釘定):`{model}`
 - temperature:每批於 [0.9, 1.1] 均勻抽樣(B.2)
 - 批大小:{args.batch_size}(B.2:20–40)
+- thinking_budget:{args.thinking_budget}(-1 = 模型預設;DECISIONS #28/#29)
+- 歷史版本與配置異質性見 README「Corpus provenance」與 DECISIONS #28–#32
 - 同批去重:3-gram Jaccard > {JACCARD_THRESHOLD} 丟棄重生
 - 跨批監控:抽樣 {CROSS_SAMPLE_SIZE} 筆比對,重複率 > {CROSS_BATCH_WARN:.0%} 告警
 - 域配比:configs/domains_v1.toml(DECISIONS #15)
