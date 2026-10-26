@@ -3,6 +3,12 @@
 # proportions 由 corpusgen 正規化(總和 ≈ 1,浮點誤差可容)。
 # 初始案,5k 實跑 GLS 後可調,調整記入 DECISIONS。
 
+# 域層級最近文字史機制(corpusgen.py 的 domain_recent_context):
+# 2026-10-26 實測為負面結果,已停用——religious ceremonies 小幅改善但未過,
+# work scenes 5.9%→26.2% 大幅惡化(DECISIONS #31)。根因:無強制不同主詞
+# 的軸,純粹「秀範例 + 講道理」,跟 wildlife 最初失敗的 hint 版同病,具體
+# 範例反而讓模型錨定。機制程式碼保留(揭露失敗嘗試),此處不設 key = 停用。
+
 [tiers]
 p07 = ["studio photography"]
 p3 = ["esports & board games"]

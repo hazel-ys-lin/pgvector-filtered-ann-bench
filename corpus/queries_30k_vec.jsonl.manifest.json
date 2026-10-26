@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-23T13:24:21Z",
+  "generated_at": "2026-10-26T08:17:35Z",
   "source_file": "corpus/queries_30k.jsonl",
-  "source_sha256": "91d3ae4c3d2aff0d89bf55ded3b6f929279fb3d22e8d0eab36ffeac1948bab3a",
+  "source_sha256": "07cb181581458186118bc122aa8bb677f33968391f47c6236aa26321eba5b7c2",
   "records": 324,
   "model": "gemini-embedding-001",
   "task_type": "RETRIEVAL_QUERY",
   "output_dimensionality": 768,
   "normalized": true,
-  "pre_norm_min": 0.5824875227691231,
-  "pre_norm_max": 0.6018125672677088,
-  "pre_norm_mean": 0.5927793649349112,
-  "git_commit": "1734942b06183891ec181a0897d31b22a9ae70a2"
+  "pre_norm_min": 0.5839757618215382,
+  "pre_norm_max": 0.6035765005210351,
+  "pre_norm_mean": 0.5930257522023423,
+  "git_commit": "9eb061326a72582c9148fd5d170f5665e05bf573"
 }

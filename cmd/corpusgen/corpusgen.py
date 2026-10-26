@@ -61,6 +61,30 @@ HINT_TEMPLATE = "\nAdditional constraint for this domain: {hint}"
 ROSTER_TEMPLATE = ("\nSubject assignment for this batch — record i MUST feature "
                    "subject i, no substitutions, no additions:\n{assignments}")
 
+# 2026-10-01 新增(DECISIONS #30):單靠 roster 解決「寫哪個物種」的選擇權,
+# 解決不了「同物種第二次出現要寫不同場景」——實測 thinking 預算越高反而
+# 讓重複物種的描述越像(每批是獨立無狀態呼叫,模型看不到之前寫過什麼,
+# 多想只是更收斂到該物種最典型的單一寫法)。真正的解法是把物種「已出現
+# 過的句子」塞進 prompt 當負面範例,這才是模型真的看得到的建構式約束。
+HISTORY_NOTE = (" [NOTE: this species already appears earlier in the dataset — "
+                "previous scene(s): {prior} — write a genuinely different habitat, "
+                "season, time of day, behavior, and camera framing]")
+HISTORY_MAX_PRIOR = 2  # 最近 N 次,避免 prompt 過長
+
+# 2026-10-01(DECISIONS #31):無 roster 的域沒有「物種」這種現成主詞可掛
+# 歷史,改成域層級的「最近寫過什麼」——同一套「餵負面範例」原理,換成
+# 不分主詞、單純記最近 N 筆。TOML [domain_recent_context],只對 author
+# 指定的域開啟(此次:religious ceremonies、work scenes)。
+RECENT_CONTEXT_TEMPLATE = (
+    "\nRecently generated scenes in this domain — do not repeat or closely "
+    "resemble any of these; vary setting, subjects, and composition:\n{recent}")
+RECENT_CONTEXT_WINDOW = 5
+
+
+def load_recent_texts(path: pathlib.Path, domain: str, window: int) -> collections.deque:
+    texts = load_domain_texts_in_order(path, domain)
+    return collections.deque(texts[-window:], maxlen=window)
+
 
 def roster_slice(roster: list, seed: int, start: int, n: int) -> list:
     """決定性名冊切片:seed 洗牌一次,依已生成筆數 start 連續取 n(mod 迴繞)。
@@ -68,6 +92,40 @@ def roster_slice(roster: list, seed: int, start: int, n: int) -> list:
     shuffled = roster[:]
     random.Random(seed).shuffle(shuffled)
     return [shuffled[(start + i) % len(shuffled)] for i in range(n)]
+
+
+def load_domain_texts_in_order(path: pathlib.Path, domain: str) -> list[str]:
+    """按 id(=生成順序)取某域既有文字,供重建物種出現史。"""
+    if not path.exists():
+        return []
+    rows = []
+    with path.open() as f:
+        for line in f:
+            obj = json.loads(line)
+            if obj["domain"] == domain:
+                rows.append((obj["id"], obj["text"]))
+    rows.sort(key=lambda t: t[0])
+    return [t for _, t in rows]
+
+
+def build_species_history(roster: list, seed: int, texts_in_order: list[str]) -> dict:
+    """依位置重建『物種 → 依序已出現文字』。位置 p 的物種 = roster_slice(...,p,1)[0],
+    與生成當下指派邏輯完全一致(同 seed 同切片函式)。"""
+    seq = roster_slice(roster, seed, 0, len(texts_in_order)) if texts_in_order else []
+    hist: dict = {}
+    for sp, txt in zip(seq, texts_in_order):
+        hist.setdefault(sp, []).append(txt)
+    return hist
+
+
+def format_assignment_line(i: int, species: str, history: dict) -> str:
+    """單筆指派行;物種有出現史則附加負面範例與差異化指示。"""
+    line = f"{i+1}. {species}"
+    prior = history.get(species)
+    if prior:
+        quoted = "; ".join(f'"{p}"' for p in prior[-HISTORY_MAX_PRIOR:])
+        line += HISTORY_NOTE.format(prior=quoted)
+    return line
 
 REQUIRED_KEYS = {"text", "domain", "scene", "objects", "time_of_day"}
 JACCARD_THRESHOLD = 0.6   # B.2:同批 > 0.6 丟棄
@@ -347,6 +405,7 @@ def main():
     tiers = cfg["tiers"]
     hints = cfg.get("domain_hints", {})
     rosters = cfg.get("domain_rosters", {})
+    recent_ctx_domains = set(cfg.get("domain_recent_context", []))
     all_domains = [d for ds in tiers.values() for d in ds]
     missing = set(all_domains) ^ set(proportions)
     if missing:
@@ -365,6 +424,18 @@ def main():
     batch_no = 0
     tok_in = tok_out = tok_think = 0  # usage_metadata 累計(成本實測儀表)
     write_prompts_md(pathlib.Path(args.prompts_md), args.model, args, hints, rosters)
+
+    # 物種出現史(DECISIONS #30):僅 roster 域需要,從既有輸出重建
+    species_history = {
+        domain: build_species_history(roster, args.seed,
+                                      load_domain_texts_in_order(out_path, domain))
+        for domain, roster in rosters.items()
+    }
+    # 域層級最近文字史(DECISIONS #31):無 roster 的域,只對指定域開啟
+    recent_history = {
+        domain: load_recent_texts(out_path, domain, RECENT_CONTEXT_WINDOW)
+        for domain in recent_ctx_domains
+    }
 
     with out_path.open("a") as out:
         while True:
@@ -387,8 +458,13 @@ def main():
                 species = None
                 if domain in rosters:
                     species = roster_slice(rosters[domain], args.seed, counts[domain], n)
+                    hist = species_history.setdefault(domain, {})
                     user_prompt += ROSTER_TEMPLATE.format(
-                        assignments="\n".join(f"{i+1}. {s}" for i, s in enumerate(species)))
+                        assignments="\n".join(
+                            format_assignment_line(i, s, hist) for i, s in enumerate(species)))
+                if domain in recent_ctx_domains and recent_history.get(domain):
+                    quoted = "\n".join(f"- {t}" for t in recent_history[domain])
+                    user_prompt += RECENT_CONTEXT_TEMPLATE.format(recent=quoted)
                 resp = client.models.generate_content(
                     model=args.model,
                     contents=user_prompt,
@@ -442,6 +518,13 @@ def main():
                 rec_out = {"id": next_id, **{k: rec[k] for k in REQUIRED_KEYS}}
                 out.write(json.dumps(rec_out, ensure_ascii=False) + "\n")
                 out.flush()
+                if domain in rosters and species and pos < len(species):
+                    species_history.setdefault(domain, {}).setdefault(
+                        species[pos], []).append(rec["text"])
+                if domain in recent_ctx_domains:
+                    recent_history.setdefault(
+                        domain, collections.deque(maxlen=RECENT_CONTEXT_WINDOW)
+                    ).append(rec["text"])
                 monitors.note_accept(domain, g, rec["text"])
                 counts[domain] += 1
                 next_id += 1
@@ -502,6 +585,34 @@ def selftest():
     b = roster_slice(roster, 42, 5, 5)
     assert a1[:5] + b[:2] == roster_slice(roster, 42, 0, 7), "consecutive slices align"
     assert len(set(a1)) == 5, "no dup within slice when roster large enough"
+
+    # 物種出現史(DECISIONS #30):重建需與 roster_slice 指派邏輯一致。
+    # roster 3 種、4 筆文字:位置 3 迴繞撞回位置 0 的物種(roster_slice 的
+    # mod 行為),所以該物種歷史在第 4 筆後應累積 2 筆,順序是先進先出。
+    roster2 = [f"sp{i}" for i in range(3)]
+    texts = ["scene for slot 0", "scene for slot 1", "scene for slot 2", "repeat of slot 0"]
+    hist = build_species_history(roster2, 99, texts)
+    seq0 = roster_slice(roster2, 99, 0, 4)
+    assert seq0[0] == seq0[3], "test setup sanity: roster size 3 + 4 texts must wrap position 3 onto 0"
+    assert hist[seq0[0]] == [texts[0], texts[3]], "wrapped species accumulates both occurrences in order"
+    assert hist[seq0[1]] == [texts[1]] and hist[seq0[2]] == [texts[2]], "non-wrapped species have 1 entry"
+
+    line_fresh = format_assignment_line(0, "zebra", {})
+    assert line_fresh == "1. zebra", "no history → no note appended"
+    line_repeat = format_assignment_line(0, "zebra", {"zebra": ["a zebra at dawn"]})
+    assert "already appears earlier" in line_repeat and "a zebra at dawn" in line_repeat
+    many_hist = {"zebra": ["scene A", "scene B", "scene C"]}
+    line_many = format_assignment_line(0, "zebra", many_hist)
+    assert "scene A" not in line_many, "only most recent HISTORY_MAX_PRIOR kept, oldest dropped"
+    assert "scene B" in line_many and "scene C" in line_many
+
+    # 域層級最近文字史(DECISIONS #31):無 roster 域的 deque 視窗行為
+    recent = collections.deque(maxlen=RECENT_CONTEXT_WINDOW)
+    for t in ["r0", "r1", "r2", "r3", "r4", "r5", "r6"]:
+        recent.append(t)
+    assert list(recent) == ["r2", "r3", "r4", "r5", "r6"], "deque keeps only last WINDOW texts"
+    tmpl = RECENT_CONTEXT_TEMPLATE.format(recent="\n".join(f"- {t}" for t in recent))
+    assert "r2" in tmpl and "r1" not in tmpl, "dropped-out texts must not leak into prompt"
 
     recs, rej = parse_batch(
         '{"text": "One two three four five six seven eight nine ten eleven", '

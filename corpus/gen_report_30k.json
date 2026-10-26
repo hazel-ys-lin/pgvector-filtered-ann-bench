@@ -35,7 +35,6 @@
     "volunteering & charity": 1265
   },
   "counts": {
-    "religious ceremonies": 1265,
     "tech expos": 1265,
     "construction & manufacturing": 1265,
     "volunteering & charity": 1265,
@@ -53,7 +52,6 @@
     "classrooms & courses": 1000,
     "gardening & plants": 1000,
     "children's play": 1000,
-    "work scenes": 1000,
     "medical scenes": 1000,
     "esports & board games": 900,
     "dance rehearsals": 900,
@@ -64,46 +62,47 @@
     "festival parades": 900,
     "museum exhibitions": 900,
     "studio photography": 210,
-    "wildlife": 1000
+    "wildlife": 1000,
+    "religious ceremonies": 1265,
+    "work scenes": 1000
   },
-  "thinking_budget": 0,
+  "thinking_budget": 512,
   "batch_size": 50,
   "token_usage": {
-    "input": 18031,
-    "output": 449602,
-    "thinking": 0,
-    "batches": 88
+    "input": 23712,
+    "output": 263617,
+    "thinking": 591,
+    "batches": 46
   },
   "records_total": 30000,
   "cross_batch_dup_rate": 0.0,
   "cross_batch_dup_alarm": false,
   "name_collapse": {
     "repeated_names_top20": {
-      "Leo": 103,
-      "Liam": 90,
-      "Maya": 83,
-      "Chloe": 79,
-      "Buddhist": 70,
-      "Marcus": 68,
-      "Lily": 64,
-      "Sarah": 62,
-      "Toby": 61,
-      "Elena": 60,
-      "Clara": 58,
-      "Hindu": 58,
-      "Arthur": 57,
-      "Shinto": 52,
-      "Roman": 49,
-      "Edison": 48,
-      "Catholic": 45,
-      "Cathedral": 44,
-      "Jewish": 44,
-      "London": 43
+      "Chloe": 215,
+      "Leo": 209,
+      "Maya": 181,
+      "Liam": 180,
+      "Arthur": 173,
+      "Clara": 163,
+      "Marcus": 158,
+      "Toby": 136,
+      "Elena": 129,
+      "Lily": 125,
+      "Sarah": 117,
+      "Julian": 108,
+      "Mateo": 92,
+      "Evelyn": 85,
+      "Seattle": 79,
+      "Lucas": 79,
+      "Sofia": 76,
+      "Beatrice": 73,
+      "Martha": 73,
+      "Sophia": 69
     },
-    "records_with_name_fraction": 0.3461
+    "records_with_name_fraction": 0.5792
   },
   "per_domain_text_dup_rate": {
-    "religious ceremonies": 0.0,
     "tech expos": 0.0,
     "construction & manufacturing": 0.0,
     "volunteering & charity": 0.0,
@@ -119,9 +118,8 @@
     "sports events": 0.0,
     "transportation": 0.0,
     "classrooms & courses": 0.0,
-    "gardening & plants": 0.002,
+    "gardening & plants": 0.0,
     "children's play": 0.0,
-    "work scenes": 0.0,
     "medical scenes": 0.0,
     "esports & board games": 0.0,
     "dance rehearsals": 0.0,
@@ -132,9 +130,11 @@
     "festival parades": 0.0,
     "museum exhibitions": 0.0,
     "studio photography": 0.0,
-    "wildlife": 0.0
+    "wildlife": 0.0,
+    "religious ceremonies": 0.0,
+    "work scenes": 0.0
   },
-  "roster_species_mismatch": 1,
+  "roster_species_mismatch": 0,
   "watchlist": {
     "religious ceremonies": {
       "text_dup_rate": 0.0,
@@ -144,49 +144,49 @@
   "batch_discard_curve": [
     [
       1,
-      "street markets",
+      "religious ceremonies",
       0,
       0
     ],
     [
       2,
-      "weddings",
+      "religious ceremonies",
       0,
       0
     ],
     [
       3,
-      "festival parades",
+      "religious ceremonies",
       0,
       0
     ],
     [
       4,
-      "dance rehearsals",
+      "religious ceremonies",
       0,
       0
     ],
     [
       5,
-      "esports & board games",
+      "religious ceremonies",
       0,
       0
     ],
     [
       6,
-      "animals & pets",
+      "religious ceremonies",
       0,
       0
     ],
     [
       7,
-      "gardening & plants",
+      "work scenes",
       0,
       0
     ],
     [
       8,
-      "medical scenes",
+      "religious ceremonies",
       0,
       0
     ],
@@ -198,475 +198,223 @@
     ],
     [
       10,
-      "children's play",
+      "religious ceremonies",
       0,
       0
     ],
     [
       11,
-      "transportation",
+      "work scenes",
       0,
       0
     ],
     [
       12,
-      "construction & manufacturing",
+      "religious ceremonies",
       0,
       0
     ],
     [
       13,
-      "classrooms & courses",
+      "work scenes",
       0,
       0
     ],
     [
       14,
-      "cooking & cuisine",
+      "religious ceremonies",
       0,
       0
     ],
     [
       15,
-      "beach activities",
+      "work scenes",
       0,
       0
     ],
     [
       16,
-      "wildlife",
+      "religious ceremonies",
       0,
       0
     ],
     [
       17,
-      "hiking & mountaineering",
+      "work scenes",
       0,
       0
     ],
     [
       18,
-      "architecture & landmarks",
+      "religious ceremonies",
       0,
       0
     ],
     [
       19,
-      "sports events",
+      "work scenes",
       0,
       0
     ],
     [
       20,
-      "city streetscapes",
+      "religious ceremonies",
       0,
       0
     ],
     [
       21,
-      "music performances",
+      "work scenes",
       0,
       0
     ],
     [
       22,
-      "studio photography",
+      "religious ceremonies",
       0,
       0
     ],
     [
       23,
-      "agriculture & fishing",
+      "work scenes",
       0,
       0
     ],
     [
       24,
-      "volunteering & charity",
+      "religious ceremonies",
       0,
       0
     ],
     [
       25,
-      "tech expos",
+      "work scenes",
       0,
       0
     ],
     [
       26,
-      "camping & picnics",
+      "religious ceremonies",
       0,
       0
     ],
     [
       27,
-      "religious ceremonies",
+      "work scenes",
       0,
       0
     ],
     [
       28,
-      "graduation ceremonies",
+      "religious ceremonies",
       0,
       0
     ],
     [
       29,
-      "dance rehearsals",
+      "work scenes",
       0,
       0
     ],
     [
       30,
-      "museum exhibitions",
+      "religious ceremonies",
       0,
       0
     ],
     [
       31,
-      "street markets",
+      "work scenes",
       0,
       0
     ],
     [
       32,
-      "coffee & desserts",
+      "religious ceremonies",
       0,
       0
     ],
     [
       33,
-      "festival parades",
+      "work scenes",
       0,
       0
     ],
     [
       34,
-      "esports & board games",
+      "religious ceremonies",
       0,
       0
     ],
     [
       35,
-      "weddings",
+      "work scenes",
       0,
       0
     ],
     [
       36,
-      "children's play",
+      "religious ceremonies",
       0,
       0
     ],
     [
       37,
-      "construction & manufacturing",
+      "work scenes",
       0,
       0
     ],
     [
       38,
-      "animals & pets",
+      "religious ceremonies",
       0,
       0
     ],
     [
       39,
-      "medical scenes",
+      "work scenes",
       0,
       0
     ],
     [
       40,
-      "classrooms & courses",
+      "religious ceremonies",
       0,
       0
     ],
     [
       41,
-      "gardening & plants",
+      "work scenes",
       0,
       0
     ],
     [
       42,
-      "work scenes",
+      "religious ceremonies",
       0,
       0
     ],
     [
       43,
-      "transportation",
-      0,
-      0
-    ],
-    [
-      44,
-      "wildlife",
-      0,
-      0
-    ],
-    [
-      45,
-      "hiking & mountaineering",
-      0,
-      0
-    ],
-    [
-      46,
-      "beach activities",
-      0,
-      0
-    ],
-    [
-      47,
-      "architecture & landmarks",
-      0,
-      0
-    ],
-    [
-      48,
-      "music performances",
-      0,
-      0
-    ],
-    [
-      49,
-      "city streetscapes",
-      0,
-      0
-    ],
-    [
-      50,
-      "cooking & cuisine",
-      0,
-      0
-    ],
-    [
-      51,
-      "sports events",
-      0,
-      0
-    ],
-    [
-      52,
-      "studio photography",
-      0,
-      0
-    ],
-    [
-      53,
-      "volunteering & charity",
-      0,
-      0
-    ],
-    [
-      54,
-      "religious ceremonies",
-      0,
-      0
-    ],
-    [
-      55,
-      "agriculture & fishing",
-      0,
-      0
-    ],
-    [
-      56,
-      "tech expos",
-      0,
-      0
-    ],
-    [
-      57,
-      "camping & picnics",
-      0,
-      0
-    ],
-    [
-      58,
-      "graduation ceremonies",
-      0,
-      0
-    ],
-    [
-      59,
-      "museum exhibitions",
-      0,
-      0
-    ],
-    [
-      60,
-      "street markets",
-      0,
-      0
-    ],
-    [
-      61,
-      "weddings",
-      0,
-      0
-    ],
-    [
-      62,
-      "esports & board games",
-      0,
-      0
-    ],
-    [
-      63,
-      "coffee & desserts",
-      0,
-      0
-    ],
-    [
-      64,
-      "dance rehearsals",
-      0,
-      0
-    ],
-    [
-      65,
-      "festival parades",
-      0,
-      0
-    ],
-    [
-      66,
-      "construction & manufacturing",
-      0,
-      0
-    ],
-    [
-      67,
       "work scenes",
       0,
       0
     ],
     [
-      68,
-      "transportation",
-      0,
-      0
-    ],
-    [
-      69,
-      "animals & pets",
-      0,
-      0
-    ],
-    [
-      70,
-      "children's play",
-      0,
-      0
-    ],
-    [
-      71,
-      "gardening & plants",
-      0,
-      0
-    ],
-    [
-      72,
-      "medical scenes",
-      0,
-      0
-    ],
-    [
-      73,
-      "classrooms & courses",
-      0,
-      0
-    ],
-    [
-      74,
-      "cooking & cuisine",
-      0,
-      0
-    ],
-    [
-      75,
-      "city streetscapes",
-      0,
-      0
-    ],
-    [
-      76,
-      "wildlife",
-      0,
-      0
-    ],
-    [
-      77,
-      "music performances",
-      0,
-      0
-    ],
-    [
-      78,
-      "hiking & mountaineering",
-      0,
-      0
-    ],
-    [
-      79,
-      "sports events",
-      0,
-      0
-    ],
-    [
-      80,
-      "beach activities",
-      0,
-      0
-    ],
-    [
-      81,
-      "architecture & landmarks",
-      0,
-      0
-    ],
-    [
-      82,
-      "studio photography",
-      0,
-      0
-    ],
-    [
-      83,
+      44,
       "religious ceremonies",
       0,
       0
     ],
     [
-      84,
-      "tech expos",
+      45,
+      "work scenes",
       0,
       0
     ],
     [
-      85,
-      "volunteering & charity",
-      0,
-      0
-    ],
-    [
-      86,
-      "agriculture & fishing",
-      0,
-      0
-    ],
-    [
-      87,
-      "camping & picnics",
-      0,
-      0
-    ],
-    [
-      88,
-      "graduation ceremonies",
+      46,
+      "religious ceremonies",
       0,
       0
     ]
